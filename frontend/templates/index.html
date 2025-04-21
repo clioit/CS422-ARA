@@ -84,6 +84,8 @@
     document.querySelector('form').addEventListener('submit', function(e) {
       e.preventDefault();
 
+      // Send data to backend using POST, backend sends back a result message, message
+      // parsed as json, upload-status element is updated to json's message field
       const pdfData = new FormData(this);
       fetch('/upload_pdf', {method: 'POST', body: pdfData})
         .then(response => response.json())
