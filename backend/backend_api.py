@@ -24,12 +24,10 @@ def get_pdf():
     filename = request.args.get('file')
     pdf_path = f"/frontend/static/"
     return send_from_directory(pdf_path, filename)
-
 """
-# get_pdf but actually from mongoDB (not local computer)
-# Should be close to done, but I'm not sure how to test
-# the function without upload_pdf to retrieve it yet
 
+# get_pdf but actually from mongoDB (not local computer)
+# Please look over this and upload_pdf
 @app.route('/get_pdf', methods=['GET'])
 def get_pdf():
     filename = request.args.get('name')
@@ -42,11 +40,16 @@ def get_pdf():
 def get_notes():
     pass
 
+# You can test this by opening the webpage and trying to upload
+# a file. It should populate in pdfs section of MongoDB
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():
     file = request.files['pdf_file']
     if file.filename.endswith(".pdf"):
+        existing_pdf_check = PDF.objects(name=file.filename).first()
+        if existing_pdf_check:
+            return jsonify({'message': f'Could not upload: "{file.filename}" already exists.'}), 409
         new_pdf = PDF(name=file.filename)
         new_pdf.file.put(file)
         new_pdf.save()
-        return jsonify({'message': f'File "{file.filename}" successfully uploaded'}), 201
+        return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
