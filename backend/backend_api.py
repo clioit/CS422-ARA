@@ -1,6 +1,6 @@
 from db_models import *
 from db_seeder import seed_db
-from flask import Flask, render_template, send_file, send_from_directory, request, abort
+from flask import Flask, render_template, send_file, send_from_directory, request, jsonify
 from mongoengine import connect
 from os import environ as env
 import io
@@ -38,12 +38,10 @@ def get_pdf():
     file_stream = io.BytesIO(file_data)
     return send_file(file_stream, mimetype='application/pdf')
 
-
 @app.route('/get_notes', methods=['GET'])
 def get_notes():
     pass
 
-""" Untested
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():
     file = request.files['pdf_file']
@@ -51,4 +49,4 @@ def upload_pdf():
         new_pdf = PDF(name=file.filename)
         new_pdf.file.put(file)
         new_pdf.save()
-"""
+        return jsonify({'message': f'File "{file.filename}" successfully uploaded'}), 201
