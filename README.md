@@ -8,8 +8,8 @@ Compose, click the link for your platform on [Get Docker](https://docs.docker.co
 Once you've installed Docker, open Docker Desktop. This will start the Docker daemon in the background so you can build
 and deploy Docker containers. Now:
 
-- `cd` into the repository's `backend` directory.
-- (Optional) `mkdir example_documents` and move example PDFs into that folder.
+- `cd` into the repository's main directory.
+- (Not yet tested) `mkdir example_documents` and move example PDFs into that folder.
   - These will be loaded into the database on startup and become available to all users.
 - Run `docker compose up -d`.
 
