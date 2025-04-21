@@ -1,6 +1,6 @@
 from db_models import *
 from db_seeder import seed_db
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_from_directory, request, abort
 from mongoengine import connect
 from os import environ as env
 
@@ -21,8 +21,8 @@ def index():
 @app.route('/get_pdf')
 def get_pdf():
     filename = request.args.get('file')
-    pdf_path = f"/frontend/static/{filename}"
-    return send_file(pdf_path)
+    pdf_path = f"/frontend/static/"
+    return send_from_directory(pdf_path, filename)
 
 @app.route('/get_notes')
 def get_notes():
