@@ -1,6 +1,6 @@
 from db_models import *
 from db_seeder import seed_db
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file, request
 from mongoengine import connect
 from os import environ as env
 
@@ -16,9 +16,13 @@ if User.objects.count() == 0:
 def index():
     return render_template('index.html')
 
+# Test this using link below after server is running:
+# http://localhost:5001/get_pdf?file=Sample_Survey_Highlights.pdf
 @app.route('/get_pdf')
 def get_pdf():
-    pass
+    filename = request.args.get('file')
+    pdf_path = f"/frontend/static/{filename}"
+    return send_file(pdf_path)
 
 @app.route('/get_notes')
 def get_notes():
