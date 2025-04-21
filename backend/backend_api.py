@@ -16,9 +16,10 @@ if User.objects.count() == 0:
 @app.route('/')
 def index():
     return render_template('index.html')
+
 """
 # Test this using link below after server is running:
-# http://localhost:5001/get_pdf?file=Sample_Survey_Highlights.pdf
+# http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
 @app.route('/get_pdf', methods=['GET'])
 def get_pdf():
     filename = request.args.get('file')
@@ -28,6 +29,7 @@ def get_pdf():
 
 # get_pdf but actually from mongoDB (not local computer)
 # Please look over this and upload_pdf
+# http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
 @app.route('/get_pdf', methods=['GET'])
 def get_pdf():
     filename = request.args.get('name')
@@ -42,6 +44,8 @@ def get_notes():
 
 # You can test this by opening the webpage and trying to upload
 # a file. It should populate in pdfs section of MongoDB
+# You can access it using
+# http://localhost:5001/get_pdf?name=[uploaded file name here].pdf
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():
     file = request.files['pdf_file']
