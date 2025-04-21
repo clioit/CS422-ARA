@@ -4,7 +4,6 @@ from flask import Flask, render_template
 from mongoengine import connect
 from os import environ as env
 
-
 app = Flask(__name__,
             template_folder='/frontend/templates',
             static_folder='/frontend/static')
@@ -16,3 +15,15 @@ if User.objects.count() == 0:
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/get_pdf')
+def get_pdf():
+    pass
+
+@app.route('/get_notes')
+def get_notes():
+    pass
+
+@app.route('/upload_pdf')
+def upload_pdf():
+    pass
