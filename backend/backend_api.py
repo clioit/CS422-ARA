@@ -16,7 +16,7 @@ if User.objects.count() == 0:
 @app.route('/')
 def index():
     return render_template('index.html')
-
+"""
 # Test this using link below after server is running:
 # http://localhost:5001/get_pdf?file=Sample_Survey_Highlights.pdf
 @app.route('/get_pdf', methods=['GET'])
@@ -37,12 +37,18 @@ def get_pdf():
     file_data = pdf_file.file.read()
     file_stream = io.BytesIO(file_data)
     return send_file(file_stream, mimetype='application/pdf')
-"""
+
 
 @app.route('/get_notes', methods=['GET'])
 def get_notes():
     pass
 
+""" Untested
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():
-    pass
+    file = request.files['pdf_file']
+    if file.filename.endswith(".pdf"):
+        new_pdf = PDF(name=file.filename)
+        new_pdf.file.put(file)
+        new_pdf.save()
+"""
