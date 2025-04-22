@@ -1,6 +1,6 @@
 from db_models import *
 from db_seeder import seed_db
-from flask import Flask, render_template, send_file, send_from_directory, request, jsonify
+from flask import Flask, render_template, send_file, send_from_directory, request, jsonify, abort
 from mongoengine import connect
 from os import environ as env
 import io
@@ -23,6 +23,8 @@ def index():
 def get_pdf():
     filename = request.args.get('name')
     pdf_file = PDF.objects(name=filename).first()
+    if pdf_file == None:
+        abort(404)
     file_data = pdf_file.file.read()
     file_stream = io.BytesIO(file_data)
     return send_file(file_stream, mimetype='application/pdf', download_name=filename)
