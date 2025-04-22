@@ -25,7 +25,7 @@ def get_pdf():
     pdf_file = PDF.objects(name=filename).first()
     file_data = pdf_file.file.read()
     file_stream = io.BytesIO(file_data)
-    return send_file(file_stream, mimetype='application/pdf')
+    return send_file(file_stream, mimetype='application/pdf', download_name=filename)
 
 @app.route('/get_notes', methods=['GET'])
 def get_notes():
