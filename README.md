@@ -8,9 +8,7 @@ Compose, click the link for your platform on [Get Docker](https://docs.docker.co
 Once you've installed Docker, open Docker Desktop. This will start the Docker daemon in the background so you can build
 and deploy Docker containers. Now:
 
-- `cd` into the repository's `backend` directory.
-- (Optional) `mkdir example_documents` and move example PDFs into that folder.
-  - These will be loaded into the database on startup and become available to all users.
+- `cd` into the repository's main directory.
 - Run `docker compose up -d`.
 
 After the build process finishes, the MongoDB database instance and the ARA web API will be running in the background.
