@@ -8,10 +8,10 @@ def seed_db():
     NOTE: Assumes MongoEngine is already connected to an instance.
     """
     example_docs = []
-    if os.path.isdir("example_documents"):
-        for file_name in os.listdir("example_documents"):
+    if os.path.isdir("/example_documents"):
+        for file_name in os.listdir("/example_documents"):
             if file_name.endswith(".pdf"):
-                new_pdf = PDF(name=file_name, file=open(f"example_documents/{file_name}", "rb").read())
+                new_pdf = PDF(name=file_name, file=open(f"/example_documents/{file_name}", "rb").read())
                 new_pdf.save()
                 example_docs.append(new_pdf)
 
