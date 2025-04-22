@@ -24,13 +24,11 @@ if User.objects.count() == 0:
 @app.route('/get_pdf', methods=['GET'])
 def get_pdf():
     file_name = request.args.get('name')
-    if not file_name:
-        return jsonify({"error": "File parameter is required"}), 400
-
     pdf_file = PDF.objects(file=file_name).first()
-
+    if file_name == none:
+        return jsonify({"error": "File parameter is required"}), 400
     pdf = PDF.objects(name=file_name).first() #Checks if pdf exsists
-    if not pdf:
+    if pdf == None:
         return jsonify({"error": "PDF not found"}), 404
 
     pdf_bytes = pdf.file.read()
@@ -49,7 +47,7 @@ def list_pdfs():
     pdf_list = [{"id": str(pdf.id), "name": pdf.name, "num_pages": pdf.num_pages} for pdf in pdfs]
     return jsonify(pdf_list)
 
-
+h
 # Route to search PDFs by filename
 @app.route('/find_pdf', methods=['GET'])
 def find_pdf():
