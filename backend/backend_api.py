@@ -1,9 +1,9 @@
 from db_models import *
+#from db_models import User, PDF, Note
 from db_seeder import seed_db
 from flask import Flask, request, jsonify, send_file
 from mongoengine import connect
 from os import environ as env
-#from db_models import User, PDF, Note
 from io import BytesIO
 
 
@@ -24,7 +24,7 @@ def get_pdf():
 
     pdf_file = PDF.objects(file=filename).first()
 
-    pdf = PDF.objects(name=file_name).first()
+    pdf = PDF.objects(name=file_name).first() #Checks if pdf exsists
     if not pdf:
         return jsonify({"error": "PDF not found"}), 404
 
@@ -33,7 +33,7 @@ def get_pdf():
     return send_file(BytesIO(pdf_data), mimetype='application/pdf', as_attachment=True, download_name=pdf.name)
     #From the flask.send_file documentation:
     #as_attachment – Indicate to a browser that it should offer to save the file instead of displaying it.
-    #download_name – The default name browsers will use when saving the file. Defaults to the passed file name.
+    #download_name – The default name browsers  use when saving the file. Defaults to the passed file name.
 
 
 # Route to list all PDFs in the database
