@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, send_file
 from mongoengine import connect
 from os import environ as env
 #from db_models import User, PDF, Note
-#from io import BytesIO
+from io import BytesIO
 
 
 app = Flask(__name__)
@@ -16,29 +16,24 @@ if User.objects.count() == 0:
 if User.objects.count() == 0:
     seed_db()
 
-# Basic test route
-#@app.route("/")
-#def hello_world():
-#    return "<p>Hello, World!</p>"
-
-# Route to retrieve a PDF file
+#Route to retrieve a PDF file
 #jsonify automatically adds the Content-Type, is essential for web clients
 @app.route('/get_pdf', methods=['GET'])
 def get_pdf():
-    file_name = request.args.get('file')
+    file_name = request.args.get('name')
+
     pdf_file = PDF.objects(file=filename).first()
-    if not file_name:
-        return jsonify({"error": "File parameter is required"}), 404 #400?
 
     pdf = PDF.objects(name=file_name).first()
     if not pdf:
         return jsonify({"error": "PDF not found"}), 404
 
     pdf_bytes = pdf.file.read()
-    return send_file(BytesIO(pdf_bytes),
-                     mimetype='application/pdf')
-#as_attachment=True, download_name=pdf.name)???
-
+    file_stream = io.BytesIO(pdf_data)
+    return send_file(BytesIO(pdf_data), mimetype='application/pdf', as_attachment=True, download_name=pdf.name)
+    #From the flask.send_file documentation:
+    #as_attachment – Indicate to a browser that it should offer to save the file instead of displaying it.
+    #download_name – The default name browsers will use when saving the file. Defaults to the passed file name.
 
 
 # Route to list all PDFs in the database
@@ -46,4 +41,22 @@ def get_pdf():
 @app.route('/list_pdfs', methods=['GET'])
 def list_pdfs():
     pdfs = PDF.objects()
-    pdf_list = [{"id": str(pdf.id), "name": pdf_
+    pdf_list = [{"id": str(pdf.id), "name": pdf.name, "num_pages": pdf.num_pages} for pdf in pdfs]
+    return jsonify(pdf_list)
+
+
+# Route to search PDFs by filename
+@app.route('/find_pdf', methods=['GET'])
+def find_pdf():
+    query = request.args.get('name')#function expects to pass the name of the file
+    if not query:
+        return jsonify({"error": "Name query parameter is required"}), 400
+
+    matched_pdfs = PDF.objects(name__icontains=query)
+    results = [{"id": str(pdf.id), "name": pdf.name} for pdf in matched_pdfs]
+
+    return jsonify(results), 200
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
