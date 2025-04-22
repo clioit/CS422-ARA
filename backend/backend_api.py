@@ -48,25 +48,6 @@ def upload_pdf():
         new_pdf.save()
         return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
 
-#Route to retrieve a PDF file
-#jsonify automatically adds the Content-Type, is essential for web clients
-@app.route('/get_pdf', methods=['GET'])
-def get_pdf():
-    file_name = request.args.get('name')
-    pdf_file = PDF.objects(file=file_name).first()
-    if file_name == none:
-        return jsonify({"error": "File parameter is required"}), 400
-    pdf = PDF.objects(name=file_name).first() #Checks if pdf exsists
-    if pdf == None:
-        return jsonify({"error": "PDF not found"}), 404
-
-    pdf_bytes = pdf.file.read()
-    file_stream = io.BytesIO(pdf_data)
-    return send_file(file_stream, mimetype='application/pdf', as_attachment=True, download_name=pdf.name)
-    #From the flask.send_file documentation:
-    #as_attachment – Indicate to a browser that it should offer to save the file instead of displaying it.
-    #download_name – The default name browsers  use when saving the file. Defaults to the passed file name.
-
 
 # Route to list all PDFs in the database
 #id string representation of the PDFs  MongoDB identifier.
@@ -76,11 +57,11 @@ def list_pdfs():
     pdf_list = [{"id": str(pdf.id), "name": pdf.name, "num_pages": pdf.num_pages} for pdf in pdfs]
     return jsonify(pdf_list)
 
-h
+
 # Route to search PDFs by filename
 @app.route('/find_pdf', methods=['GET'])
 def find_pdf():
-    query = request.args.get('name')#function expects to pass the name of the file
+    query = request.args.get('name')
     if not query:
         return jsonify({"error": "Name query parameter is required"}), 400
 
