@@ -6,6 +6,7 @@ RUN pip install -r requirements.txt
 
 COPY backend backend
 COPY frontend frontend
+COPY example_documents example_documents
 
 ENTRYPOINT ["python", "-m"]
 CMD ["flask", "--app", "backend/backend_api", "--debug", "run", "--host=0.0.0.0"]
