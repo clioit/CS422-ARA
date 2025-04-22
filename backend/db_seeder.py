@@ -8,7 +8,6 @@ def seed_db():
     NOTE: Assumes MongoEngine is already connected to an instance.
     """
     example_docs = []
-    static_path = "/frontend/static"
     if os.path.isdir("/frontend/static"):
         for file_name in os.listdir("/frontend/static"):
             if file_name.endswith(".pdf"):
