@@ -13,9 +13,15 @@ connect(host=f"mongodb://{env['MONGODB_HOSTNAME']}:27017/ara_db")
 if User.objects.count() == 0:
     seed_db()
 
+# open this html template
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('login.html')
+
+# open this html template
+@app.route('/readRecite')
+def readRecite():
+    return render_template('readRecite.html')
 
 # Retrieves PDF from MongoDB database and sends to frontend to populate on app
 # http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
