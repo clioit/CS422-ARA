@@ -28,6 +28,11 @@ def readRecite():
 def home():
     return render_template('home.html')
 
+# open this html template
+@app.route('/review')
+def review():
+    return render_template('review.html')
+
 # Retrieves PDF from MongoDB database and sends to frontend to populate on app
 # http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
 @app.route('/get_pdf', methods=['GET'])

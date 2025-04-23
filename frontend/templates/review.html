@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARA</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='review.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="page-top">
+        <h1 class="page-top__page-title">ARA: <span class="green">Review</span></h1>
+        <div class="page-top__user-corner">
+          <h3 id="user">username</h3>
+          <button class="home-button">HOME</button>
+        </div>
+        </div>
+    <main>
+        <div class="columns">
+            <div class="columns__sections">
+                <label for="chapter">Choose a Chapter</label>
+                <select id="chapter">
+                    <div class="chaps"></div>
+                </select>
+        <div class="sections"></div>
+        </div>
+        <div class="columns__cards">
+            <div class="columns__cards--buttons"></div>
+            <div class="columns__cards--content"></div>
+        </div>
+        </div>
+</main>
+</div>
+<script src="{{url_for('static', filename='review.js')}}"></script>
+</body>
+</html>
