@@ -49,26 +49,37 @@ def upload_pdf():
         return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
 
 
-# Route to list all PDFs in the database
-#id string representation of the PDFs  MongoDB identifier.
+#When you send a GET request to /list_pdfs, it queries the MongoDB database, retrieves a list of all stored PDFs,"
+#structures their key details (ID, name, and page count) into a clear JSON format,"
+# returns this JSON list back to the client with an HTTP status of 200.")
 @app.route('/list_pdfs', methods=['GET'])
 def list_pdfs():
     pdfs = PDF.objects()
-    pdf_list = [{"id": str(pdf.id), "name": pdf.name, "num_pages": pdf.num_pages} for pdf in pdfs]
-    return jsonify(pdf_list)
+    pdf_list = [
+        {
+            "id": str(pdf.id),
+            "name": pdf.name,
+            "num_pages": pdf.num_pages
+        } for pdf in pdfs
+    ]
+    return jsonify(pdf_list), 200
 
 
-# Route to search PDFs by filename
-@app.route('/find_pdf', methods=['GET'])
-def find_pdf():
-    query = request.args.get('name')
-    if not query:
-        return jsonify({"error": "Name query parameter is required"}), 400
+# Delete a PDF by its ID
+@app.route('/delete_pdf/<pdf_id>', methods=['DELETE'])
+def delete_pdf(pdf_id):
+    try:
+        pdf = PDF.objects(id=ObjectId(pdf_id)).first()
 
-    matched_pdfs = PDF.objects(name__icontains=query)
-    results = [{"id": str(pdf.id), "name": pdf.name} for pdf in matched_pdfs]
+    if not pdf:
+        abort(404, description="PDF not found.")
 
-    return jsonify(results), 200
+    pdf.delete()
+    return jsonify({"message": f"PDF with ID {pdf_id} successfully deleted."}), 200
+
+
+def rename_pdf(pdf_id, new_name):
+
 
 
 if __name__ == '__main__':
