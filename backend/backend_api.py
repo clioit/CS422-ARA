@@ -6,6 +6,7 @@ from os import environ as env
 import io
 
 
+
 app = Flask(__name__,
             template_folder='/frontend/templates',
             static_folder='/frontend/static')
@@ -68,17 +69,41 @@ def list_pdfs():
 # Delete a PDF by its ID
 @app.route('/delete_pdf/<pdf_id>', methods=['DELETE'])
 def delete_pdf(pdf_id):
-    try:
-        pdf = PDF.objects(id=ObjectId(pdf_id)).first()
-
-    if not pdf:
+    pdf = PDF.objects(id=pdf_id).first()
+    if pdf is None:
         abort(404, description="PDF not found.")
-
     pdf.delete()
-    return jsonify({"message": f"PDF with ID {pdf_id} successfully deleted."}), 200
+    return jsonify({"message": f"PDF with the ID {pdf_id}  has been successfully deleted."}), 200
 
 
-def rename_pdf(pdf_id, new_name):
+# Rename a PDF given its ID and new name
+from flask import request, jsonify, abort
+
+@app.route('/rename_pdf/<pdf_id>', methods=['PUT'])
+def rename_pdf(pdf_id):
+    try:
+        pdf = PDF.objects(id=pdf_id).first()
+
+    pdf.name = new_name
+    pdf.save()
+
+    return jsonify({
+        "message": "PDF renamed successfully.",
+        "new_name": new_name
+    }), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
