@@ -9,20 +9,22 @@
   <body>
     <div class="container">
       <div class="page-top">
-      <h1 class="page-title">ARA: <span class="purple">User's Home</span></h1>
-      <div class="user-corner">
+      <h1 class="page-top__page-title">ARA: <span class="purple">Home</span></h1>
+      <div class="page-top__user-corner">
         <h3 id="user">username</h3>
         <button class="logout">Logout</button>
       </div>
     </div>
       <div class="pdf_selection">
         <label for="doc-choice">Choose a Document to Open</label>
-        <select id="doc-choice">
-            <option value="1" class="doc1">Document 1</option>
-            <option value="2" class="doc1">Document 2</option>
-            <option value="3" class="doc1">Document 3</option>
-        </select>
+        <div class="pdf_selection__display" id="pdf-display"></div>
+        <div id="chosen-doc"></div>
+        <div class="next">
+          <button class="next__button">Begin: <span class="chosen">Survey & Question</span></button>
+        </div>
       </div>
     </div>
+    <script src="{{url_for('static', filename='home.js')}}"></script>
+    <script src="https://kit.fontawesome.com/ff325f6dbb.js" crossorigin="anonymous"></script>
   </body>
 </html>
