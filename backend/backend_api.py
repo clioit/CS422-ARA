@@ -73,7 +73,7 @@ def delete_pdf(pdf_id):
     if pdf is None:
         abort(404, description="PDF not found.")
     pdf.delete()
-    return jsonify({"message": f"PDF with the ID {pdf_id}  has been successfully deleted."}), 200
+    return jsonify({"message": f"PDF with the ID {pdf_id} has been successfully deleted."}), 200
 
 
 # Rename a PDF given its ID and new name
@@ -84,11 +84,17 @@ def rename_pdf(pdf_id):
     try:
         pdf = PDF.objects(id=pdf_id).first()
 
+    except Exception:
+        abort(400, description="Invalid PDF ID format.")
+
     if pdf is None:
         abort(404, description="PDF not found.")
 
     data = request.get_json()
     new_name = data.get('new_name')
+
+    if not new_name:
+        abort(400, description="Missing 'new_name' parameter.")
 
     if PDF.objects(name=new_name).first():
         abort(409, description="The PDF with this new name already exists.")
