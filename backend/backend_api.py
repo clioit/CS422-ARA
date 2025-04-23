@@ -84,11 +84,21 @@ def rename_pdf(pdf_id):
     try:
         pdf = PDF.objects(id=pdf_id).first()
 
+    if pdf is None:
+        abort(404, description="PDF not found.")
+
+    data = request.get_json()
+    new_name = data.get('new_name')
+
+    if PDF.objects(name=new_name).first():
+        abort(409, description="The PDF with this new name already exists.")
+
     pdf.name = new_name
     pdf.save()
 
     return jsonify({
         "message": "PDF renamed successfully.",
+        "pdf_id": str(pdf.id),
         "new_name": new_name
     }), 200
 
