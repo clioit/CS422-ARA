@@ -112,6 +112,23 @@ def rename_pdf(pdf_id):
 
 
 
+@app.route('/create_note/<pdf_id>', methods=['POST'])
+def create_note(pdf_id):
+    data = request.get_json()
+    start_page = data.get('start_page')
+    note_type = data.get('type')  # Should show as CHAPTER_TITLE, SECTION_HEADING, or SECTION_NOTE
+    text = data.get('text')
+
+    if not all([start_page is not None, note_type, text]):
+        abort(400, description="Missing the note data.")
+
+    pdf = PDF.objects(id=pdf_id).first()
+    if not pdf:
+        abort(404, description="PDF not found.")
+
+
+
+
 
 
 
