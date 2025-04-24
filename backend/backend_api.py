@@ -111,7 +111,7 @@ def rename_pdf(pdf_id):
 
 
 
-
+#Used db_models.py and https://docs.mongoengine.org/guide/defining-documents.html to help with format
 @app.route('/create_note/<pdf_id>', methods=['POST'])
 def create_note(pdf_id):
     data = request.get_json()
@@ -126,15 +126,23 @@ def create_note(pdf_id):
     if not pdf:
         abort(404, description="PDF not found.")
 
+    try:
+        note = Note(
+            start_page=start_page,
+            type=NoteType[note_type],
+            text=text
+        ).save()
+        pdf.notes.append(note)
+
+    return jsonify({"Message": "Note has been successfully created", "note_id": str(note.id)}), 201
 
 
 
-
-
-
-
-
-
+@app.route('/edit_note/<note_id>', methods=['PUT'])
+def edit_note(note_id):
+    data = request.get_json()
+    text = data.get('text')
+    start_page = data.get('start_page')
 
 
 
