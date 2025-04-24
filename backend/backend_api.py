@@ -133,6 +133,7 @@ def create_note(pdf_id):
             text=text
         ).save()
         pdf.notes.append(note)
+        pdf.save()
 
     return jsonify({"Message": "Note has been successfully created", "note_id": str(note.id)}), 201
 
