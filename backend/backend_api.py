@@ -71,7 +71,7 @@ def list_pdfs():
 def delete_pdf(pdf_id):
     pdf = PDF.objects(id=pdf_id).first()
     if pdf is None:
-        abort(404, description="PDF not found.")
+        abort(404, description="PDF NOT found.")
     pdf.delete()
     return jsonify({"message": f"PDF with the ID {pdf_id} has been successfully deleted."}), 200
 
@@ -83,19 +83,16 @@ from flask import request, jsonify, abort
 def rename_pdf(pdf_id):
     try:
         pdf = PDF.objects(id=pdf_id).first()
-
     except Exception:
         abort(400, description="Invalid PDF ID format.")
-
     if pdf is None:
-        abort(404, description="PDF not found.")
+        abort(404, description="PDF NOT found.")
 
     data = request.get_json()
     new_name = data.get('new_name')
 
     if not new_name:
         abort(400, description="Missing 'new_name' parameter.")
-
     if PDF.objects(name=new_name).first():
         abort(409, description="The PDF with this new name already exists.")
 
@@ -116,15 +113,16 @@ def rename_pdf(pdf_id):
 def create_note(pdf_id):
     data = request.get_json()
     start_page = data.get('start_page')
-    note_type = data.get('type')  # Should show as CHAPTER_TITLE, SECTION_HEADING, or SECTION_NOTE
+    note_type = data.get('type')  # Should show as the CHAPTER_TITLE, SECTION_HEADING, or SECTION_NOTE
     text = data.get('text')
 
     if not all([start_page is not None, note_type, text]):
         abort(400, description="Missing the note data.")
 
     pdf = PDF.objects(id=pdf_id).first()
+
     if not pdf:
-        abort(404, description="PDF not found.")
+        abort(404, description="PDF NOT found.")
 
     try:
         note = Note(
@@ -145,7 +143,11 @@ def edit_note(note_id):
     text = data.get('text')
     start_page = data.get('start_page')
 
-
+    note = Note.objects(id=note_id).first()
+    if not note:
+        abort(404, description="Note is NOT found.")
+    if text:
+        note.text = text
 
 
 
