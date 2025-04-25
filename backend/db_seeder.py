@@ -7,11 +7,21 @@ def seed_db():
     Loads example documents and users into the database.
     NOTE: Assumes MongoEngine is already connected to an instance.
     """
+    example_chapters = [
+        Chapter(title='Chapter 1', start_page=1, sections=[
+            Section(title="I. Introduction", start_page=1, notes=[
+                Note(start_page=1, text="This is an introduction to the text."),
+                QuestionAnswer(start_page=1, question="What is this an introduction to?", text="The text."),
+            ]),
+        ])
+    ]
+
     example_docs = []
     if os.path.isdir("/example_documents"):
         for file_name in os.listdir("/example_documents"):
             if file_name.endswith(".pdf"):
-                new_pdf = PDF(name=file_name, file=open(f"/example_documents/{file_name}", "rb").read())
+                new_pdf = PDF(name=file_name, file=open(f"/example_documents/{file_name}", "rb").read(),
+                              chapters=example_chapters)
                 new_pdf.save()
                 example_docs.append(new_pdf)
 

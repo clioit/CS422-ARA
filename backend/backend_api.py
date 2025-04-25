@@ -36,7 +36,11 @@ def get_pdf():
 
 @app.route('/get_notes', methods=['GET'])
 def get_notes():
-    pass
+    pdf_name = request.args.get('pdf')
+    pdf_obj: PDF = PDF.objects(name=pdf_name).first()
+    if pdf_obj is None:
+        abort(404)
+    return pdf_obj.to_mongo().to_dict()["chapters"]
 
 
 @app.route('/upload_pdf', methods=['POST'])
