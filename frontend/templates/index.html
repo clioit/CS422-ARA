@@ -68,6 +68,31 @@
 
   </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+/* create a form with a dropdown menu and a delete button */
+    <div id="delete-form">
+      <h2>Delete PDF</h2>
+      <form id="deletePDFForm">
+        <label for="pdfSelect">Select PDF:</label>
+        <select id="pdfSelect" required></select><br><br>
+        <button type="submit">Delete</button>
+      </form>
+      <div id="delete-status"></div>
+    </div>
+
+
+
   /* Allows users to select a PDF and enter a new name */
      <div id="rename-form">
       <h2>Rename PDF</h2>
@@ -83,18 +108,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-\*The JavaScript to Handle the Rename Operation */
+\* rename_pdf gives the user an interface to select a PDF and enter a new name.*/
 <script>
   document.getElementById('renamePDFForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevent the default form submission
@@ -106,6 +120,7 @@
       document.getElementById('rename-status').textContent = 'Please enter a new name.';
       return;
     }
+
     fetch(`/rename_pdf/${pdfId}`, {
       method: 'PUT',
       headers: {
@@ -113,15 +128,29 @@
       },
       body: JSON.stringify({ new_name: newName })
     })
-       .then(response => {
+    .then(response => {
       if (!response.ok) {
         return response.json().then(errorData => {
           throw new Error(errorData.description || 'Unknown error');
         });
       }
       return response.json();
-
+    })
+    .then(data => {
+      document.getElementById('rename-status').textContent = data.message;
+      populatePDFSelect(); // Refresh the dropdown to reflect the new name
+    })
+    .catch(error => {
+      document.getElementById('rename-status').textContent = `Error: ${error.message}`;
+    });
+  });
 </script>
+
+
+
+
+
+
 
 
 
