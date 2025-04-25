@@ -42,10 +42,10 @@
       margin-top: 20px;
     }
     #delete-form {
-      margin-top: 40px;
+      margin-top: 25px;
     }
     #rename-form {
-      margin-top: 60px;
+      margin-top: 30px;
     }
 
   </style>
@@ -73,30 +73,18 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-/* create a form with a dropdown menu and a delete button */
+  <!-- Create a form with a dropdown menu and a delete button -->
     <div id="delete-form">
       <h2>Delete PDF</h2>
       <form id="deletePDFForm">
-        <label for="pdfSelect">Select PDF:</label>
-        <select id="pdfSelect" required></select><br><br>
+        <label for="pdf_Select">Select PDF:</label>
+        <select id="pdf_Select" required></select><br><br>
         <button type="submit">Delete</button>
       </form>
       <div id="delete-status"></div>
     </div>
 
-
-
-  /* Allows users to select a PDF and enter a new name */
+  <!-- Allows users to select a PDF and enter a new name -->
      <div id="rename-form">
       <h2>Rename PDF</h2>
       <form id="renamePDFForm">
@@ -111,7 +99,7 @@
 
 
 
-\* rename_pdf gives the user an interface to select a PDF and enter a new name.*/
+<!-- rename_pdf gives the user an interface to select a PDF and enter a new name.-->
 <script>
   document.getElementById('renamePDFForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevent the default form submission

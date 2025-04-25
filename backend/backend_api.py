@@ -50,9 +50,8 @@ def upload_pdf():
         return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
 
 
-#When you send a GET request to /list_pdfs, it queries the MongoDB database, retrieves a list of all stored PDFs,"
-#structures their key details (ID, name, and page count) into a clear JSON format,"
-# returns this JSON list back to the client with an HTTP status of 200.")
+#When you send a GET request to /list_pdfs, it queries the MongoDB database, retrieves a list of all stored PDFs,
+#structures their key details (ID, name, and page count) into a clear JSON format
 @app.route('/list_pdfs', methods=['GET'])
 def list_pdfs():
     pdfs = PDF.objects()
@@ -103,14 +102,13 @@ def rename_pdf(pdf_id):
     }), 200
 
 
-
-
+"""
 #Used db_models.py and https://docs.mongoengine.org/guide/defining-documents.html to help with format
 @app.route('/create_note/<pdf_id>', methods=['POST'])
 def create_note(pdf_id):
     data = request.get_json()
     start_page = data.get('start_page')
-    note_type = data.get('type')  # Should show as the CHAPTER_TITLE, SECTION_HEADING, or SECTION_NOTE
+    note_type = data.get('type')  # Should show as the CHAPTER_TITLE, SECTION_HEADING, or SECTION_NOTE???
     text = data.get('text')
 
     if not all([start_page is not None, note_type, text]):
@@ -131,22 +129,8 @@ def create_note(pdf_id):
         pdf.save()
 
     return jsonify({"Message": "Note has been successfully created", "note_id": str(note.id)}), 201
-
-
-#TO DO
 """
-@app.route('/edit_note/<note_id>', methods=['PUT'])
-def edit_note(note_id):
-    data = request.get_json()
-    text = data.get('text')
-    start_page = data.get('start_page')
 
-    note = Note.objects(id=note_id).first()
-    if not note:
-        abort(404, description="Note is NOT found.")
-    if text:
-        note.text = text
-"""
 
 
 if __name__ == '__main__':
