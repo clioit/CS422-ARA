@@ -41,6 +41,9 @@
     #upload-form {
       margin-top: 20px;
     }
+    #rename-form {
+      margin-top: 40px;
+    }
 
   </style>
 </head>
@@ -64,6 +67,23 @@
     <textarea id="notes" placeholder="Type here..."></textarea>
 
   </div>
+
+/* Allows users to select a PDF and enter a new name */
+    <div id="rename-form">
+      <h2>Rename PDF</h2>
+      <form id="renamePDFForm">
+        <label for="pdfSelect">Select PDF:</label>
+        <select id="pdfSelect" required></select><br><br>
+
+
+
+
+
+
+
+
+
+
 
   <script>
     // Check if there's already a saved note in localStorage
