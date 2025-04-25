@@ -19,35 +19,33 @@ if User.objects.count() == 0:
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', dummy_pdf_id=str(PDF.objects(name='dummy.pdf').first().id))
 
 
-@app.route('/get_pdf', methods=['GET'])
-def get_pdf():
+@app.route('/pdf/<pdf_id>', methods=['GET'])
+def get_pdf(pdf_id: str):
     """
     Retrieves a PDF from the MongoDB database and returns its bytes.
-    Ex: http://localhost:5001/get_pdf?name=dummy.pdf
+    Ex: http://localhost:5001/pdf/680be4af29187334e35baad3
     """
-    filename = request.args.get('name')
-    pdf_file = PDF.objects(name=filename).first()
+    pdf_file = PDF.objects(id=pdf_id).first()
     if pdf_file is None:
         abort(404)
     file_data = pdf_file.file.read()
     file_stream = io.BytesIO(file_data)
-    return send_file(file_stream, mimetype='application/pdf', download_name=filename)
+    return send_file(file_stream, mimetype='application/pdf', download_name=pdf_file.name)
 
 
-@app.route('/get_notes', methods=['GET'])
-def get_notes():
+@app.route('/pdf/<pdf_id>/notes', methods=['GET'])
+def get_notes(pdf_id: str):
     """Gets notes for a pdf."""
-    pdf_name = request.args.get('pdf')
-    pdf_obj: PDF = PDF.objects(name=pdf_name).first()
+    pdf_obj: PDF = PDF.objects(id=pdf_id).first()
     if pdf_obj is None:
         abort(404)
     return pdf_obj.to_mongo().to_dict()["chapters"]
 
 
-@app.route('/upload_pdf', methods=['POST'])
+@app.route('/pdf/upload', methods=['POST'])
 def upload_pdf():
     """Receives and uploads a PDF to the MongoDB database."""
     file = request.files['pdf_file']
@@ -61,7 +59,7 @@ def upload_pdf():
         return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
 
 
-@app.route('/list_pdfs', methods=['GET'])
+@app.route('/pdf/list', methods=['GET'])
 def list_pdfs():
     """
     Queries the MongoDB database, retrieves a list of all stored PDFs,
@@ -78,8 +76,8 @@ def list_pdfs():
     return jsonify(pdf_list), 200
 
 
-@app.route('/delete_pdf/<pdf_id>', methods=['DELETE'])
-def delete_pdf(pdf_id):
+@app.route('/pdf/<pdf_id>', methods=['DELETE'])
+def delete_pdf(pdf_id: str):
     """Deletes a PDF by its ID."""
     pdf = PDF.objects(id=pdf_id).first()
     if pdf is None:
@@ -88,8 +86,8 @@ def delete_pdf(pdf_id):
     return jsonify({"message": f"PDF with the ID {pdf_id} has been successfully deleted."}), 200
 
 
-@app.route('/rename_pdf/<pdf_id>', methods=['PATCH'])
-def rename_pdf(pdf_id):
+@app.route('/pdf/<pdf_id>', methods=['PATCH'])
+def rename_pdf(pdf_id: str):
     """Renames a PDF given its ID."""
     try:
         pdf = PDF.objects(id=pdf_id).first()
@@ -117,8 +115,8 @@ def rename_pdf(pdf_id):
 
 
 # TODO: complete implementation
-@app.route('/create_note/<pdf_id>', methods=['POST'])
-def create_note(pdf_id):
+@app.route('/pdf/<pdf_id>/notes', methods=['POST'])
+def create_note(pdf_id: str):
     """Creates a new note on a PDF."""
     data = request.get_json()
     start_page = data.get('start_page')
