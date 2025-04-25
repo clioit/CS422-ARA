@@ -41,6 +41,12 @@
     #upload-form {
       margin-top: 20px;
     }
+    #delete-form {
+      margin-top: 25px;
+    }
+    #rename-form {
+      margin-top: 30px;
+    }
 
   </style>
 </head>
@@ -64,6 +70,81 @@
     <textarea id="notes" placeholder="Type here..."></textarea>
 
   </div>
+
+
+
+  <!-- Create a form with a dropdown menu and a delete button -->
+    <div id="delete-form">
+      <h2>Delete PDF</h2>
+      <form id="deletePDFForm">
+        <label for="pdf_Select">Select PDF:</label>
+        <select id="pdf_Select" required></select><br><br>
+        <button type="submit">Delete</button>
+      </form>
+      <div id="delete-status"></div>
+    </div>
+
+  <!-- Allows users to select a PDF and enter a new name -->
+     <div id="rename-form">
+      <h2>Rename PDF</h2>
+      <form id="renamePDFForm">
+        <label for="pdfSelect">Select PDF:</label>
+        <select id="pdfSelect" required></select><br><br>
+        <label for="newName">New Name:</label>
+        <input type="text" id="newName" placeholder="Enter new PDF name" required><br><br>
+        <button type="submit">Rename</button>
+      </form>
+      <div id="rename-status"></div>
+    </div>
+
+
+
+<!-- rename_pdf gives the user an interface to select a PDF and enter a new name.-->
+<script>
+  document.getElementById('renamePDFForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    const pdfId = document.getElementById('pdfSelect').value;
+    const newName = document.getElementById('newName').value.trim();
+
+    if (!newName) {
+      document.getElementById('rename-status').textContent = 'Please enter a new name.';
+      return;
+    }
+
+    fetch(`/rename_pdf/${pdfId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ new_name: newName })
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('rename-status').textContent = data.message;
+      populatePDFSelect(); // Refresh the dropdown to reflect the new name
+    })
+    .catch(error => {
+      document.getElementById('rename-status').textContent = `Error: ${error.message}`;
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
 
   <script>
     // Check if there's already a saved note in localStorage

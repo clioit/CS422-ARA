@@ -5,6 +5,8 @@ from mongoengine import connect
 from os import environ as env
 import io
 
+
+
 app = Flask(__name__,
             template_folder='/frontend/templates',
             static_folder='/frontend/static')
@@ -55,3 +57,90 @@ def upload_pdf():
         new_pdf.file.put(file)
         new_pdf.save()
         return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
+
+
+#When you send a GET request to /list_pdfs, it queries the MongoDB database, retrieves a list of all stored PDFs,
+#structures their key details (ID, name, and page count) into a clear JSON format
+@app.route('/list_pdfs', methods=['GET'])
+def list_pdfs():
+    pdfs = PDF.objects()
+    pdf_list = [
+        {
+            "id": str(pdf.id),
+            "name": pdf.name,
+            "num_pages": pdf.num_pages
+        } for pdf in pdfs
+    ]
+    return jsonify(pdf_list), 200
+
+
+# Delete a PDF by its ID
+@app.route('/delete_pdf/<pdf_id>', methods=['DELETE'])
+def delete_pdf(pdf_id):
+    pdf = PDF.objects(id=pdf_id).first()
+    if pdf is None:
+        abort(404, description="PDF NOT found.")
+    pdf.delete()
+    return jsonify({"message": f"PDF with the ID {pdf_id} has been successfully deleted."}), 200
+
+
+@app.route('/rename_pdf/<pdf_id>', methods=['PUT'])
+def rename_pdf(pdf_id):
+    try:
+        pdf = PDF.objects(id=pdf_id).first()
+    except Exception:
+        abort(400, description="Invalid PDF ID format.")
+    if pdf is None:
+        abort(404, description="PDF NOT found.")
+
+    data = request.get_json()
+    new_name = data.get('new_name')
+
+    if not new_name:
+        abort(400, description="Missing 'new_name' parameter.")
+    if PDF.objects(name=new_name).first():
+        abort(409, description="The PDF with this new name already exists.")
+
+    pdf.name = new_name
+    pdf.save()
+
+    return jsonify({
+        "message": "PDF renamed successfully.",
+        "pdf_id": str(pdf.id),
+        "new_name": new_name
+    }), 200
+
+
+"""
+#Used db_models.py and https://docs.mongoengine.org/guide/defining-documents.html to help with format
+@app.route('/create_note/<pdf_id>', methods=['POST'])
+def create_note(pdf_id):
+    data = request.get_json()
+    start_page = data.get('start_page')
+    note_type = data.get('type')  # Should show as the CHAPTER_TITLE, SECTION_HEADING, or SECTION_NOTE???
+    text = data.get('text')
+
+    if not all([start_page is not None, note_type, text]):
+        abort(400, description="Missing the note data.")
+
+    pdf = PDF.objects(id=pdf_id).first()
+
+    if not pdf:
+        abort(404, description="PDF NOT found.")
+
+    try:
+        note = Note(
+            start_page=start_page,
+            type=NoteType[note_type],
+            text=text
+        ).save()
+        pdf.notes.append(note)
+        pdf.save()
+
+    return jsonify({"Message": "Note has been successfully created", "note_id": str(note.id)}), 201
+"""
+
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
