@@ -27,4 +27,8 @@ document.querySelector("form").addEventListener("submit", function (e) {
     );
 });
 
+function goHome(){
+  window.location.replace("http://localhost:5001/home");
+}
+
 
