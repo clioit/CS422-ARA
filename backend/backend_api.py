@@ -1,10 +1,11 @@
+import mongoengine
+
 from db_models import *
 from db_seeder import seed_db
 from flask import Flask, render_template, send_file, request, jsonify, abort
 from mongoengine import connect
 from os import environ as env
 import io
-
 
 
 app = Flask(__name__,
@@ -38,6 +39,7 @@ def get_pdf():
 
 @app.route('/get_notes', methods=['GET'])
 def get_notes():
+    """Gets notes for a pdf."""
     pdf_name = request.args.get('pdf')
     pdf_obj: PDF = PDF.objects(name=pdf_name).first()
     if pdf_obj is None:
@@ -59,10 +61,12 @@ def upload_pdf():
         return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
 
 
-#When you send a GET request to /list_pdfs, it queries the MongoDB database, retrieves a list of all stored PDFs,
-#structures their key details (ID, name, and page count) into a clear JSON format
 @app.route('/list_pdfs', methods=['GET'])
 def list_pdfs():
+    """
+    Queries the MongoDB database, retrieves a list of all stored PDFs,
+    structures their key details (ID, name, and page count) into a clear JSON format.
+    """
     pdfs = PDF.objects()
     pdf_list = [
         {
@@ -74,9 +78,9 @@ def list_pdfs():
     return jsonify(pdf_list), 200
 
 
-# Delete a PDF by its ID
 @app.route('/delete_pdf/<pdf_id>', methods=['DELETE'])
 def delete_pdf(pdf_id):
+    """Deletes a PDF by its ID."""
     pdf = PDF.objects(id=pdf_id).first()
     if pdf is None:
         abort(404, description="PDF NOT found.")
@@ -84,14 +88,15 @@ def delete_pdf(pdf_id):
     return jsonify({"message": f"PDF with the ID {pdf_id} has been successfully deleted."}), 200
 
 
-@app.route('/rename_pdf/<pdf_id>', methods=['PUT'])
+@app.route('/rename_pdf/<pdf_id>', methods=['PATCH'])
 def rename_pdf(pdf_id):
+    """Renames a PDF given its ID."""
     try:
         pdf = PDF.objects(id=pdf_id).first()
-    except Exception:
+    except mongoengine.errors.InvalidQueryError:
         abort(400, description="Invalid PDF ID format.")
     if pdf is None:
-        abort(404, description="PDF NOT found.")
+        abort(404, description="PDF not found.")
 
     data = request.get_json()
     new_name = data.get('new_name')
@@ -111,16 +116,15 @@ def rename_pdf(pdf_id):
     }), 200
 
 
-"""
-#Used db_models.py and https://docs.mongoengine.org/guide/defining-documents.html to help with format
+# TODO: complete implementation
 @app.route('/create_note/<pdf_id>', methods=['POST'])
 def create_note(pdf_id):
+    """Creates a new note on a PDF."""
     data = request.get_json()
     start_page = data.get('start_page')
-    note_type = data.get('type')  # Should show as the CHAPTER_TITLE, SECTION_HEADING, or SECTION_NOTE???
     text = data.get('text')
 
-    if not all([start_page is not None, note_type, text]):
+    if not all([start_page is not None, text]):
         abort(400, description="Missing the note data.")
 
     pdf = PDF.objects(id=pdf_id).first()
@@ -128,18 +132,14 @@ def create_note(pdf_id):
     if not pdf:
         abort(404, description="PDF NOT found.")
 
-    try:
-        note = Note(
-            start_page=start_page,
-            type=NoteType[note_type],
-            text=text
-        ).save()
-        pdf.notes.append(note)
-        pdf.save()
+    note = Note(
+        start_page=start_page,
+        text=text
+    )
+    pdf.notes.append(note)
+    pdf.save()
 
-    return jsonify({"Message": "Note has been successfully created", "note_id": str(note.id)}), 201
-"""
-
+    return jsonify({"Message": "Note has been successfully created."}), 201
 
 
 if __name__ == '__main__':
