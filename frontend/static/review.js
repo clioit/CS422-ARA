@@ -1,5 +1,7 @@
-// array to store book data [ch[s,s,s,..], ...]
-const chapArray = [[`one`, [`hi`,`hello`, `bye`]],[`two`, [`hi`,`ski`, `bye`]]];
+// stand in arrays, need functions to load from BE
+const sectArray = [[`hi`,`hello`, `bye`],[`hi`,`ski`, `bye`]];
+const chapArray = [[`one`, 0],[`two`, 1]];
+
 
 function fillChapters(){
     for(let i=0; i<chapArray.length;i++){
@@ -18,23 +20,45 @@ function fillChapters(){
 
 fillChapters();
 
-// function fillTags(){
-//     const chap = document.getElementById("chapter");
-//     const chVal = chap.value;
+let sectTags = [];
 
-//     const listElement = document.createElement("ul");
-//     listElement.className = "tags__tag-list";
+function fillTags(){
+    clearSections();
+    const chap = document.getElementById("chapter").value;
+    const mySections = sectArray[chap];
 
-//     for(let i=0; i<chVal.length; i++){
-//         const tag =document.createElement("li");
-//         tag.className="tags__tag-list--tag";
-//         tag.textContent = `${chVal[i]}`;
-//         listElement.appendChild(tag);
-        
-//         const onPage = document.getElementById("sections");
-//         onPage.appendChild(listElement);
-//     }
-// }
+    for(let i = 0; i<mySections.length; i++){
+    sectTags.push(`${mySections[i]}`);
+    }
+    updateSections();
+}
 
-// fillTags();
+function updateSections(){
+    const tagList = document.getElementById("tags");
+    tagList.innerHTML = '';
+    for(let i=0; i<sectTags.length; i++){
 
+        const tag = document.createElement('li');
+        tag.className = "tag";
+
+        let tagTitle = document.createElement('div');
+        tagTitle.className = 'tag-title';
+        tagTitle.innerHTML = `${sectTags[i]}`;
+
+        // Create REVIEW SET button with onclick attribute
+        const viewButton = document.createElement('button');
+        viewButton.textContent = 'REVIEW SET';
+        viewButton.className = 'view-button';
+        // deleteButton.setAttribute('onclick', `deleteTask(${i})`);
+        tag.appendChild(tagTitle);
+        tag.appendChild(viewButton);
+
+        tagList.appendChild(tag);
+
+}
+}
+
+function clearSections(){
+   sectTags = [];
+   updateSections
+}

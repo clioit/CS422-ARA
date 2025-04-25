@@ -15,8 +15,9 @@
 }
 
 .pdf-button:hover{
-    background-color: rgba(55, 0, 128, .7)!important;
+    background-color: rgba(55, 0, 128, .7);
 }
+
 button {
     color: white;
     background-color: rgb(55, 0, 128);
@@ -67,9 +68,6 @@ button:hover{
     margin: 4px;
     background-color:  rgba(55, 0, 128, .3);
 }
-.pdf-button:hover{
-    background-color: rgb(255, 0, 0);
-}
 
 .next{
     text-align: right;
@@ -78,6 +76,9 @@ button:hover{
 .next__button{
     border: none;
     padding: 4px auto;
+}
+.next__button:hover{
+    background-color: rgb(255, 0, 0);
 }
 
 .doc-el{

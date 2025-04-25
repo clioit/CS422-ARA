@@ -19,10 +19,12 @@
         <div class="columns">
             <div class="columns__sections">
                 <label for="chapter">Choose a Chapter</label>
-                <select id="chapter">
+                <select id="chapter" onchange="fillTags()" type="array">
                     <div class="chaps"></div>
                 </select>
-        <div class="sections"></div>
+        <div class="sections">
+            <ul id= "tags" class="tags"></ul>
+        </div>
         </div>
         <div class="columns__cards">
             <div class="columns__cards--buttons"></div>
