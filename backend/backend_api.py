@@ -33,6 +33,11 @@ def home():
 def review():
     return render_template('review.html')
 
+# open this html template
+@app.route('/surveyQuestion')
+def review():
+    return render_template('surveyQuestion.html')
+
 # Retrieves PDF from MongoDB database and sends to frontend to populate on app
 # http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
 @app.route('/get_pdf', methods=['GET'])
