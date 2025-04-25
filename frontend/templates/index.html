@@ -85,6 +85,35 @@
 
 
 
+
+
+
+
+
+
+
+
+
+\*The JavaScript to Handle the Rename Operation */
+<script>
+  document.getElementById('renamePDFForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    const pdfId = document.getElementById('pdfSelect').value;
+    const newName = document.getElementById('newName').value.trim();
+
+    if (!newName) {
+      document.getElementById('rename-status').textContent = 'Please enter a new name.';
+      return;
+    }
+
+
+
+
+
+
+
+
   <script>
     // Check if there's already a saved note in localStorage
     window.onload = function() {
