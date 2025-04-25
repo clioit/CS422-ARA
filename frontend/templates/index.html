@@ -106,10 +106,22 @@
       document.getElementById('rename-status').textContent = 'Please enter a new name.';
       return;
     }
+    fetch(`/rename_pdf/${pdfId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ new_name: newName })
+    })
+       .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
 
-
-
-
+</script>
 
 
 
