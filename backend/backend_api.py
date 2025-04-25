@@ -35,7 +35,7 @@ def review():
 
 # open this html template
 @app.route('/surveyQuestion')
-def review():
+def surveyQuestion():
     return render_template('surveyQuestion.html')
 
 # Retrieves PDF from MongoDB database and sends to frontend to populate on app
