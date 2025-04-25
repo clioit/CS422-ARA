@@ -33,3 +33,7 @@ function displayDocChoice(idx){
 }
 
 displayDocOptions();
+
+function goSQ(){
+    window.location.replace("http://localhost:5001/surveyQuestion");
+  }

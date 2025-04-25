@@ -11,7 +11,7 @@
     <h1 class="page-top__page-title">ARA: <span class="yellow">Read & Recite</span></h1>
     <div class="page-top__user-corner">
       <h3 id="user">username</h3>
-      <button class="home-button">HOME</button>
+      <button class="home-button" onclick="goHome()">HOME</button>
     </div>
     </div>
 <main>
@@ -45,7 +45,8 @@
     <h1>Notes</h1>
     <p>Use this space to take notes:</p>
     <textarea id="notes" placeholder="Type here..."></textarea>
-
+    <button class="sq" onclick="goSQ()"><span class="chosen">Go Back</span></button>
+    <button class="review" onclick="goReview()">Next: REVIEW</button>
   </div>
 </main>
 </div>

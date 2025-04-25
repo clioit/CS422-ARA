@@ -62,3 +62,7 @@ function clearSections(){
    sectTags = [];
    updateSections
 }
+
+function goHome(){
+    window.location.replace("http://localhost:5001/home");
+  }

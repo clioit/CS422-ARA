@@ -31,4 +31,11 @@ function goHome(){
   window.location.replace("http://localhost:5001/home");
 }
 
+function goReview(){
+  window.location.replace("http://localhost:5001/review");
+}
+
+function goSQ(){
+  window.location.replace("http://localhost:5001/surveyQuestion");
+}
 
