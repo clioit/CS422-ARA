@@ -68,18 +68,18 @@
 
   </div>
 
-/* Allows users to select a PDF and enter a new name */
-    <div id="rename-form">
+  /* Allows users to select a PDF and enter a new name */
+     <div id="rename-form">
       <h2>Rename PDF</h2>
       <form id="renamePDFForm">
         <label for="pdfSelect">Select PDF:</label>
         <select id="pdfSelect" required></select><br><br>
-
-
-
-
-
-
+        <label for="newName">New Name:</label>
+        <input type="text" id="newName" placeholder="Enter new PDF name" required><br><br>
+        <button type="submit">Rename</button>
+      </form>
+      <div id="rename-status"></div>
+    </div>
 
 
 
