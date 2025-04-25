@@ -76,9 +76,6 @@ def delete_pdf(pdf_id):
     return jsonify({"message": f"PDF with the ID {pdf_id} has been successfully deleted."}), 200
 
 
-# Rename a PDF given its ID and new name
-from flask import request, jsonify, abort
-
 @app.route('/rename_pdf/<pdf_id>', methods=['PUT'])
 def rename_pdf(pdf_id):
     try:
@@ -136,7 +133,8 @@ def create_note(pdf_id):
     return jsonify({"Message": "Note has been successfully created", "note_id": str(note.id)}), 201
 
 
-
+#TO DO
+"""
 @app.route('/edit_note/<note_id>', methods=['PUT'])
 def edit_note(note_id):
     data = request.get_json()
@@ -148,7 +146,7 @@ def edit_note(note_id):
         abort(404, description="Note is NOT found.")
     if text:
         note.text = text
-
+"""
 
 
 if __name__ == '__main__':
