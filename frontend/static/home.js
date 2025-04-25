@@ -1,6 +1,11 @@
 // replace with users PDF array
 const PDFArray = [`one`, `two`, `three`]; 
 
+function logout(){
+    console.log("logout clicked!");
+    window.location.replace("http://localhost:5001/");
+}
+
 function displayDocOptions(){
     for(let i=0; i<PDFArray.length; i++){
         const thisDoc = document.createElement("button");
