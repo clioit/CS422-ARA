@@ -193,7 +193,7 @@ function addSection(){
     //console.log(questionIn);
     const currChap = document.getElementById("chapter").value;
     console.log(currChap);
-    sectArray[currChap].unshift(sectionName);
+    sectArray[currChap].push(sectionName);
     console.log(sectArray);
     console.log(`top`);
     fillTags();

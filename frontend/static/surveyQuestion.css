@@ -128,6 +128,7 @@ ul{
 
 .section-container{
     padding: 4px;
+    overflow-y: auto;
 }
 
 #tags {
@@ -186,6 +187,7 @@ background-color: rgb(212,212,9);
 
 .answer-area{
     padding: 2px;
+    max-width: 95%;
 }
 
 .remove-btn{
