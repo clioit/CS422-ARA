@@ -1,3 +1,5 @@
+/**NOTES */
+
 // Check if there's already a saved note in localStorage
 window.onload = function () {
   const savedNotes = localStorage.getItem("userNotes");
@@ -26,6 +28,10 @@ document.querySelector("form").addEventListener("submit", function (e) {
         (document.getElementById("upload-status").textContent = data.message)
     );
 });
+
+
+
+/**NAVIGATION */
 
 function goHome(){
   window.location.replace("http://localhost:5001/home");

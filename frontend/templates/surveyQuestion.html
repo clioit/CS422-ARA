@@ -45,7 +45,12 @@
     <div class="notes">
     <h1>Q & A</h1>
     <p>Use this space to take <span class="red">Ask & Answer Questions</span></p>
-    <textarea id="notes" placeholder="Type here..."></textarea>
+    <div class="questions">
+        <input type="text" class="question" id="question">
+        <button onclick="addQuestion()">ADD</button>
+        <ul class="questions-list" id="questions-list"></ul>
+    </div>
+    <!-- <textarea id="notes" placeholder="Type here..."></textarea> -->
     <button class="review" onclick="goRead()">Next: Read & Recite</button>
 </div>
   </div>

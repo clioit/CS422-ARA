@@ -33,6 +33,12 @@ button:hover {
   background-color: rgba(255, 0, 0, 0.648);
   transform: translateY(+1px);
 }
+
+ul{
+    text-decoration: none;
+    list-style-type: none;
+    text-align: center;
+}
 .red {
   color: red;
 }
@@ -135,4 +141,27 @@ button:hover {
 
 .review:hover{
 background-color: rgb(212,212,9);
+}
+
+.question{
+    width: 85%;
+}
+
+.question-obj{
+    background-color: rgba(255, 0, 0, 0.3);
+    justify-content: space-between;
+    margin: 4px;
+    padding: 2px;
+    border-width: 2px;
+    font-size: 10pt;
+}
+
+.q-text{
+    background-color: rgba(255, 0, 0, 0.551);
+    border-radius: 2px;
+    margin: 2px;
+}
+
+.answer-area{
+    padding: 2px;
 }
