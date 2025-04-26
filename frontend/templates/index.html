@@ -112,7 +112,7 @@
       return;
     }
 
-    fetch(`/pdf/${pdfId}`, {
+    fetch(`/pdfs/${pdfId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -160,7 +160,7 @@
       // Send data to backend using POST, backend sends back a result message, message
       // parsed as json, upload-status element is updated to json's message field
       const pdfData = new FormData(this);
-      fetch('/pdf/upload', {method: 'POST', body: pdfData})
+      fetch('/pdfs', {method: 'POST', body: pdfData})
         .then(response => response.json())
         .then(data => document.getElementById('upload-status').textContent = data.message);
     });
