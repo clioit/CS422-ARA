@@ -50,6 +50,10 @@ ul{
   width: 100%;
 }
 
+
+/**PAGE TOPPER*/
+
+
 .page-top {
   display: flex;
   flex-direction: row;
@@ -69,6 +73,10 @@ ul{
     background-color: rgb(55, 0, 128);
 }
 
+
+/** MAIN SECTIONS [pdf | note | questions] */
+
+
 .columns {
   background-color: rgba(255, 0, 0, 0.1);
   margin-top: 8px;
@@ -77,6 +85,7 @@ ul{
   height: 75vh;
 }
 
+/* PDF */
 .pdf-container {
   width: 70%;
   min-height:min-content;
@@ -89,6 +98,7 @@ ul{
   overflow-y: auto;
   box-sizing: border-box;
 }
+
 /* Text area for notes */
 #notes {
   width: 100%;
@@ -106,10 +116,18 @@ ul{
   margin-top: 20px;
 }
 
+
+
+/*SECTION TAGS*/
 #chapter {
   min-width: fit-content;
   max-width: 70%;
   margin-right: 4px;
+
+}
+
+.section-container{
+    padding: 4px;
 }
 
 #tags {
@@ -143,6 +161,8 @@ ul{
 background-color: rgb(212,212,9);
 }
 
+
+/* Q & A */
 .question{
     width: 85%;
 }
@@ -156,12 +176,19 @@ background-color: rgb(212,212,9);
     font-size: 10pt;
 }
 
-.q-text{
+.answer-el{
     background-color: rgba(255, 0, 0, 0.551);
     border-radius: 2px;
     margin: 2px;
+    max-width: fit-content;
+    text-align: center;
 }
 
 .answer-area{
     padding: 2px;
+}
+
+.remove-btn{
+    text-align: right;
+    max-width: 100%;
 }

@@ -45,6 +45,7 @@ function updateQuestions(){
     questionText.innerHTML = `Q: ${questions[i][0]}`;
 
     const dQuestion = document.createElement("button");
+    dQuestion.className = "remove-btn";
     dQuestion.setAttribute("onclick", `removeQuestion(${i})`);
     dQuestion.textContent = `remove`;
    
@@ -52,13 +53,14 @@ function updateQuestions(){
     
     
     let saveAnswer;
-    if(questions[i][1]==''){
+    if(questions[i][1]==''){ //there isn't an answer
     saveAnswer = document.createElement("button");
     saveAnswer.id = `answer${i}`;
    saveAnswer.setAttribute("onclick", `makeAnswer(${i})`);
    saveAnswer.textContent = `ANSWER`;}
-   else {
+   else { //there is an answer
     saveAnswer = document.createElement("div");
+    saveAnswer.className = "answer-el";
     saveAnswer.innerHTML = `${questions[i][1]}`;
    }
 
@@ -98,9 +100,109 @@ function updateAnswer(idx){
     questions[idx][1] = `A: ${answer.value.trim()}`;
     answer.remove();
     updateQuestions();
-    const but = document.getElementById("save-ans");
-    but.remove();
+    const answerBtn = document.getElementById("save-ans");
+    answerBtn.remove();
 }
+
+
+
+/**SECTION TAGS */
+
+// stand in arrays, need functions to load from BE
+const sectArray = [[`hi`,`hello`, `bye`],[`hi`,`ski`, `bye`]];
+const chapArray = [[`one`, 0],[`two`, 1]];
+
+// loads chapters into select menu
+function fillChapters(){
+    for(let i=0; i<chapArray.length;i++){
+        const chapHolder = document.createElement("div");
+        chapHolder.className = "chap-obj";
+        
+        const chap = document.createElement("option");
+        chap.textContent = `${chapArray[i][0]}`;
+        chap.value = chapArray[i][1];
+        
+        const menu = document.getElementById("chapter");
+        chapHolder.appendChild(chap);
+        menu.appendChild(chapHolder);
+    }
+}
+
+fillChapters();
+
+// array for 
+let sectTags = [];
+
+// populates sectTags array with all sections from chosen chapter
+function fillTags(){
+    clearSections();
+    const chap = document.getElementById("chapter").value;
+    const mySections = sectArray[chap];
+
+    for(let i = 0; i<mySections.length; i++){
+    sectTags.push(`${mySections[i]}`);
+    }
+    updateSections();
+}
+
+// displays sectTags as OSO (On Screen Object)
+function updateSections(){
+    const tagList = document.getElementById("tags");
+    tagList.innerHTML = '';
+    for(let i=0; i<sectTags.length; i++){
+
+        const tag = document.createElement('li');
+        tag.className = "tag";
+
+        let tagTitle = document.createElement('div');
+        tagTitle.className = 'tag-title';
+        tagTitle.innerHTML = `${sectTags[i]}`;
+
+        // Create REVIEW SET button with onclick attribute
+        const viewButton = document.createElement('button');
+        viewButton.textContent = 'VIEW SET';
+        viewButton.className = 'view-button';
+
+        const rmvButton = document.createElement('button');
+        rmvButton.textContent = 'REMOVE SET'
+      //saveMe.setAttribute("onclick", `removeS()`);
+        rmvButton.className = 'view-button';
+
+       // viewButtonButton.setAttribute('onclick', `setSection(${i})`);
+        tag.appendChild(tagTitle);
+        tag.appendChild(viewButton);
+        tag.appendChild(rmvButton);
+
+        tagList.appendChild(tag);
+
+}
+}
+
+function clearSections(){
+   sectTags = [];
+   updateSections();
+}
+
+function clearS(){
+    const quest = document.getElementById("new-section");
+    quest.textContent = '';
+}
+
+function addSection(){
+    const sectionName = document.getElementById("new-section").value.trim();
+    //console.log(questionIn);
+    const currChap = document.getElementById("chapter").value;
+    console.log(currChap);
+    sectArray[currChap].unshift(sectionName);
+    console.log(sectArray);
+    console.log(`top`);
+    fillTags();
+    clearS();}
+
+// function removeS(){
+
+// }
+
 // function newQuestion(){
 //     const questionText = get 
 // }

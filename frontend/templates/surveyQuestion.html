@@ -20,11 +20,14 @@
       <div class="section-topper">
     <label for="chapter">Choose a Chapter</label>
     <select id="chapter" onchange="fillTags()">
-        <div class="chaps"></div>
+        <div class="chaps">choose</div>
     </select>
   </div>
 <div class="sections">
 <ul id= "tags" class="tags"></ul>
+<label for="new-section">Section Name</label>
+<input type="text" id="new-section">
+<button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
 </div>
 </div>
 
@@ -56,10 +59,10 @@
   </div>
 </main>
 </div>
-  <script src="{{url_for('static', filename='review.js')}}">
-  </script>
-  <script src="{{url_for('static', filename='readRecite.js')}}">
-  </script>
+  <!-- <script src="{{url_for('static', filename='review.js')}}">
+  </script> -->
+  <!-- <script src="{{url_for('static', filename='readRecite.js')}}">
+  </script> -->
     <script src="{{url_for('static', filename='surveyQuestion.js')}}">
   </script>
 </body>

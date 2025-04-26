@@ -70,6 +70,8 @@ function clearSections(){
 
 
 /* NAVIGATION */
+
+
 function goHome(){
     window.location.replace("http://localhost:5001/home");
   }
