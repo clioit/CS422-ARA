@@ -1,31 +1,38 @@
 from mongoengine import *
+from bson.objectid import ObjectId
 
 
-class Note(Document):
+class Note(EmbeddedDocument):
     """A note attached to a page of a PDF."""
-    meta = {'collection': 'notes'}
+    meta = {'allow_inheritance': True}
+    _id = StringField(required=True, default=str(ObjectId()))
     start_page = IntField(required=True)
     text = StringField(required=True)
 
 
-class Section(Document):
+class QuestionAnswer(Note):
+    """A Q&A note which has two text fields."""
+    question = StringField(required=True)
+
+
+class Section(EmbeddedDocument):
     """A section of a PDF. Used to logically separate notes."""
-    meta = {'collection': 'sections'}
+    _id = StringField(required=True, default=str(ObjectId()))
     title = StringField(required=True)
     start_page = IntField(required=True)
-    notes = ListField(ReferenceField(Note))
+    notes = EmbeddedDocumentListField(Note)
 
 
-class Chapter(Document):
+class Chapter(EmbeddedDocument):
     """
     A chapter of a PDF. Used to logically separate sections.
     Per the SRS, there needs to be a note hierarchy of at least
     three levels (chapters, sections, notes).
     """
-    meta = {'collection': 'chapters'}
+    _id = StringField(required=True, default=str(ObjectId()))
     title = StringField(required=True)
     start_page = IntField(required=True)
-    sections = ListField(ReferenceField(Section))
+    sections = EmbeddedDocumentListField(Section)
 
 
 class PDF(Document):
@@ -33,8 +40,7 @@ class PDF(Document):
     meta = {'collection': 'pdfs'}
     file = FileField(required=True)
     name = StringField(required=True)
-    num_pages = IntField()
-    chapters = ListField(ReferenceField(Chapter))
+    chapters = EmbeddedDocumentListField(Chapter)
 
 
 class User(Document):
