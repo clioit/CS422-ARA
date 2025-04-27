@@ -1,9 +1,11 @@
+import mongoengine
 from db_models import *
 from db_seeder import seed_db
-from flask import Flask, render_template, send_file, send_from_directory, request, jsonify, abort
+from flask import Flask, render_template, send_file, request, abort
 from mongoengine import connect
 from os import environ as env
 import io
+
 
 app = Flask(__name__,
             template_folder='/frontend/templates',
@@ -13,7 +15,36 @@ connect(host=f"mongodb://{env['MONGODB_HOSTNAME']}:27017/ara_db")
 if User.objects.count() == 0:
     seed_db()
 
-# open this html template
+
+def get_object_by_id(collection, obj_id: str, is_array=False):
+    """Gets an object from a collection/array by its ID."""
+    try:
+        if is_array:
+            obj = collection.filter(_id=obj_id)
+            if len(obj) == 0:
+                abort(404, f"{repr(collection)} object with ID {obj_id} not found.")
+            elif len(obj) == 1:
+                return obj[0]
+        else:
+            obj = collection.objects(id=obj_id).first()
+            if obj is not None:
+                return obj
+            else:
+                abort(404, f"{repr(collection)} object with ID {obj_id} not found.")
+    except mongoengine.errors.InvalidQueryError:
+        abort(400, f"Object ID {obj_id} is of an invalid format.")
+
+
+def instantiate_from_request_json(cls):
+    """Instantiates a class from a JSON object in the request body."""
+    try:
+        new_obj = cls.from_json(request.get_data(as_text=True))
+        new_obj.validate()
+        return new_obj
+    except ValidationError as e:
+        return abort(400, str(e))
+
+
 @app.route('/')
 def index():
     return render_template('login.html')
