@@ -49,6 +49,12 @@ def instantiate_from_request_json(cls):
 def index():
     return render_template('login.html')
 
+""" Old index.html for reference
+@app.route('/')
+def index():
+    return render_template('index.html', dummy_pdf_id=str(PDF.objects(name='dummy.pdf').first().id))
+"""
+
 # open this html template
 @app.route('/readRecite')
 def readRecite():
