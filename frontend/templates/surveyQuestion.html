@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ARA - Active Reading Assistant</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='surveyQuestion.css')}}">
+</head>
+<body>
+  <div class="container">
+    <div class="page-top">
+    <h1 class="page-top__page-title">ARA: <span class="red">Survey & Question</span></h1>
+    <div class="page-top__user-corner">
+      <h3 id="user">username</h3>
+      <button class="home-button" onclick="goHome()">HOME</button>
+    </div>
+    </div>
+<main>
+  <div class="columns">
+    <div class="section-container">
+      <div class="section-topper">
+    <label for="chapter">Choose a Chapter</label>
+    <select id="chapter" onchange="fillTags()">
+        <option value="" selected></option>
+        <div class="chaps">choose</div>
+    </select>
+  </div>
+<div class="sections">
+<ul id= "tags" class="tags"></ul>
+<label for="new-section">Section Name</label>
+<input type="text" id="new-section">
+<button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
+</div>
+</div>
+
+  <div class="pdf-container">
+    <embed src="{{ url_for('get_pdf', name='dummy.pdf') }}" type="application/pdf" width="100%" height="100%" />
+  </div>
+  <div class="content">
+
+    <!-- <div id="upload-form">
+      <h2>Upload New PDF</h2>
+      <form action="/upload_pdf" method="POST" enctype="multipart/form-data">
+        <input type="file" name="pdf_file" accept=".pdf" required><br>
+        <button type="submit">Upload</button>
+      </form>
+      <div id="upload-status"></div>
+    </div> -->
+
+    <div class="notes">
+    <h1>Q & A</h1>
+    <p>Use this space to take <span class="red">Ask & Answer Questions</span></p>
+    <div class="questions">
+        <input type="text" class="question" id="question">
+        <button onclick="addQuestion()">ADD</button>
+        <ul class="questions-list" id="questions-list"></ul>
+    </div>
+    <!-- <textarea id="notes" placeholder="Type here..."></textarea> -->
+    <button class="review" onclick="goRead()">Next: Read & Recite</button>
+</div>
+  </div>
+</main>
+</div>
+  <!-- <script src="{{url_for('static', filename='review.js')}}">
+  </script> -->
+  <!-- <script src="{{url_for('static', filename='readRecite.js')}}">
+  </script> -->
+    <script src="{{url_for('static', filename='surveyQuestion.js')}}">
+  </script>
+</body>
+</html>

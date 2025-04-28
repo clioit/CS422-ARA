@@ -47,8 +47,27 @@ def instantiate_from_request_json(cls):
 
 @app.route('/')
 def index():
-    return render_template('index.html', dummy_pdf_id=str(PDF.objects(name='dummy.pdf').first().id))
+    return render_template('login.html')
 
+# open this html template
+@app.route('/readRecite')
+def readRecite():
+    return render_template('readRecite.html')
+
+# open this html template
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
+# open this html template
+@app.route('/review')
+def review():
+    return render_template('review.html')
+
+# open this html template
+@app.route('/surveyQuestion')
+def surveyQuestion():
+    return render_template('surveyQuestion.html')
 
 @app.route('/pdfs', methods=['GET', 'POST'])
 def pdf_set_operations():
@@ -216,6 +235,38 @@ def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             section.notes.append(new_qa)
             pdf.save()
             return new_qa.to_json(), 201
+
+# TODO Switch over to new APIs (above)
+# Retrieves PDF from MongoDB database and sends to frontend to populate on app
+# http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
+@app.route('/get_pdf', methods=['GET'])
+def get_pdf():
+    filename = request.args.get('name')
+    pdf_file = PDF.objects(name=filename).first()
+    if pdf_file == None:
+        abort(404)
+    file_data = pdf_file.file.read()
+    file_stream = io.BytesIO(file_data)
+    return send_file(file_stream, mimetype='application/pdf', download_name=filename)
+
+# TODO Switch over to new APIs (above)
+@app.route('/get_notes', methods=['GET'])
+def get_notes():
+    pass
+
+# TODO Switch over to new APIs (above)
+# Receives and uploads PDF to MongoDB database
+@app.route('/upload_pdf', methods=['POST'])
+def upload_pdf():
+    file = request.files['pdf_file']
+    if file.filename.endswith(".pdf"):
+        existing_pdf_check = PDF.objects(name=file.filename).first()
+        if existing_pdf_check:
+            return jsonify({'message': f'Could not upload: "{file.filename}" already exists.'}), 409
+        new_pdf = PDF(name=file.filename)
+        new_pdf.file.put(file)
+        new_pdf.save()
+        return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
 
 
 if __name__ == '__main__':

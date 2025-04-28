@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=National+Park:wght@200..800&family=Roboto:wdth,wght@75..100,100..900&display=swap');
+
+*{
+    font-family: "National Park", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    margin: 10%;
+    padding: 20px 20px;
+    background-color: rgba(55, 0, 128, .1);
+    border-radius: 4px;
+}
+
+.pdf-button:hover{
+    background-color: rgba(55, 0, 128, .7);
+}
+
+button {
+    color: white;
+    background-color: rgb(55, 0, 128);
+    border-radius: 4px;
+    padding: 1px 3px;
+    transition: all 300ms ease;
+    margin: 12px, 16px;
+    gap: 10px;
+}
+
+button:hover{
+    background-color: rgb(110, 0, 253);
+    transform: translateY(+1px);
+}
+
+.purple{
+    color: rgb(55, 0, 128);
+}
+
+.page-top{
+    display: flex;
+    flex-direction: row;
+}
+.page-top__page-title{
+    display: inline-block;
+    width: 100%
+}
+.page-top__user-corner{
+    text-align:right;
+}
+
+#pdf-display{
+    display: flex;
+    justify-content: space-around;
+    border-radius: 2px;
+    width: 100%;
+    padding: 12px;
+    background-color:  rgba(55, 0, 128, .1);
+}
+
+#chosen-doc{
+    text-align: right;
+}
+
+.pdf-button{
+    border: none;
+    padding: 1px 8px;
+    margin: 4px;
+    background-color:  rgba(55, 0, 128, .3);
+}
+
+.next{
+    text-align: right;
+}
+
+.next__button{
+    border: none;
+    padding: 4px auto;
+}
+.next__button:hover{
+    background-color: rgb(255, 0, 0);
+}
+
+.doc-el{
+    display: flex;
+    padding: 12px 12px;
+    flex-direction: column !important;
+    text-align: center;
+    border-radius: 2px;
+    background-color:  rgba(55, 0, 128, .3) ;
+}
