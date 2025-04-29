@@ -1,15 +1,41 @@
-// replace with users PDF array
-const PDFArray = [`one`, `two`, `three`]; 
+const PDFArray = [];
+let pdf_id = null;
 
 function logout(){
     console.log("logout clicked!");
     window.location.replace("http://localhost:5001/");
 }
 
+function fetchPDFs() {
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch('http://localhost:5001/pdfs', {
+        method: 'GET'
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errorData => {
+            throw new Error(errorData.description || 'Unknown error');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        PDFArray.length = 0;
+        data.forEach(pdf => {
+            PDFArray.push({name: pdf.name, id: pdf._id});
+        });
+        displayDocOptions();
+      })
+      .catch(error => {
+        console.error("Error: ", error.message);
+        return [];
+      });
+  }
+
 function displayDocOptions(){
-    for(let i=0; i<PDFArray.length; i++){
+    for (let i = 0; i < PDFArray.length; i++){
         const thisDoc = document.createElement("button");
-        thisDoc.textContent = PDFArray[i];
+        thisDoc.textContent = PDFArray[i].name;
         thisDoc.className = "pdf-button";
         thisDoc.setAttribute('onclick',`displayDocChoice(${i})`);
 
@@ -29,11 +55,20 @@ function displayDocOptions(){
 
 function displayDocChoice(idx){
     const displayArea = document.getElementById("chosen-doc");
-    displayArea.textContent = `You have chosen ${PDFArray[idx]}`;
+    displayArea.textContent = `You have chosen ${PDFArray[idx].name}`;
+    displayArea.style.color = "black";
+    pdf_id = PDFArray[idx].id
+
 }
 
-displayDocOptions();
-
 function goSQ(){
-    window.location.replace("http://localhost:5001/surveyQuestion");
-  }
+    if (pdf_id) {
+        window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
+    } else {
+        const displayArea = document.getElementById("chosen-doc");
+        displayArea.textContent = "Please select a PDF before proceeding.";
+        displayArea.style.color = "red";
+    }
+}
+
+fetchPDFs();

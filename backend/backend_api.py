@@ -47,27 +47,55 @@ def instantiate_from_request_json(cls):
 
 @app.route('/')
 def index():
+    """
+    Users login here. Prototype does not require password.
+    """
     return render_template('login.html')
 
-# open this html template
-@app.route('/readRecite')
-def readRecite():
-    return render_template('readRecite.html')
 
-# open this html template
 @app.route('/home')
 def home():
+    """
+    Homepage for choosing which PDFs to open.
+    """
     return render_template('home.html')
 
-# open this html template
-@app.route('/review')
-def review():
-    return render_template('review.html')
 
-# open this html template
-@app.route('/surveyQuestion')
-def surveyQuestion():
-    return render_template('surveyQuestion.html')
+@app.route('/pdfs/<pdf_id>/surveyQuestion')
+def surveyQuestion(pdf_id):
+    """
+    Page for reading PDF, taking questions/answers, and adding chapters/sections.
+    """
+    try:
+        pdf = get_object_by_id(PDF, pdf_id)
+        return render_template('surveyQuestion.html', pdf_id=pdf_id)
+    except:
+        abort(404, "PDF not found.")
+
+
+@app.route('/pdfs/<pdf_id>/readRecite')
+def readRecite(pdf_id):
+    """
+    Page for reading PDF, taking notes, and choosing chapters for notes.
+    """
+    try:
+        pdf = get_object_by_id(PDF, pdf_id)
+        return render_template('readRecite.html', pdf_id=pdf_id)
+    except:
+        abort(404, "PDF not found.")
+
+
+@app.route('/pdfs/<pdf_id>/review')
+def review(pdf_id):
+    """
+    Page for choosing chapters to review content with flashcards.
+    """
+    try:
+        pdf = get_object_by_id(PDF, pdf_id)
+        return render_template('review.html', pdf_id=pdf_id)
+    except:
+        abort(404, "PDF not found.")
+
 
 @app.route('/pdfs', methods=['GET', 'POST'])
 def pdf_set_operations():
@@ -236,25 +264,9 @@ def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             pdf.save()
             return new_qa.to_json(), 201
 
-# TODO Switch over to new APIs (above)
-# Retrieves PDF from MongoDB database and sends to frontend to populate on app
-# http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
-@app.route('/get_pdf', methods=['GET'])
-def get_pdf():
-    filename = request.args.get('name')
-    pdf_file = PDF.objects(name=filename).first()
-    if pdf_file == None:
-        abort(404)
-    file_data = pdf_file.file.read()
-    file_stream = io.BytesIO(file_data)
-    return send_file(file_stream, mimetype='application/pdf', download_name=filename)
 
-# TODO Switch over to new APIs (above)
-@app.route('/get_notes', methods=['GET'])
-def get_notes():
-    pass
-
-# TODO Switch over to new APIs (above)
+# TODO Switch over to new PDF upload API
+# Currently used on the "readRecite" webpage
 # Receives and uploads PDF to MongoDB database
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():

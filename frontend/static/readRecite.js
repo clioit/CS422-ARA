@@ -38,10 +38,10 @@ function goHome(){
 }
 
 function goReview(){
-  window.location.replace("http://localhost:5001/review");
+  window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/review`);
 }
 
 function goSQ(){
-  window.location.replace("http://localhost:5001/surveyQuestion");
+  window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
 }
 
