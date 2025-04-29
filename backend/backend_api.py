@@ -264,25 +264,9 @@ def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             pdf.save()
             return new_qa.to_json(), 201
 
-# TODO Switch over to new APIs (above)
-# Retrieves PDF from MongoDB database and sends to frontend to populate on app
-# http://localhost:5001/get_pdf?name=Sample_Survey_Highlights.pdf
-@app.route('/get_pdf', methods=['GET'])
-def get_pdf():
-    filename = request.args.get('name')
-    pdf_file = PDF.objects(name=filename).first()
-    if pdf_file == None:
-        abort(404)
-    file_data = pdf_file.file.read()
-    file_stream = io.BytesIO(file_data)
-    return send_file(file_stream, mimetype='application/pdf', download_name=filename)
 
-# TODO Switch over to new APIs (above)
-@app.route('/get_notes', methods=['GET'])
-def get_notes():
-    pass
-
-# TODO Switch over to new APIs (above)
+# TODO Switch over to new PDF upload API
+# Currently used on the "readRecite" webpage
 # Receives and uploads PDF to MongoDB database
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():
