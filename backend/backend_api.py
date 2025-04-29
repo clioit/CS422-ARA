@@ -67,7 +67,6 @@ def survey_question(pdf_id):
     Page for reading PDF, taking questions/answers, and adding chapters/sections.
     """
     try:
-        pdf = get_object_by_id(PDF, pdf_id)
         return render_template('surveyQuestion.html', pdf_id=pdf_id)
     except:
         abort(404, "PDF not found.")
@@ -79,7 +78,6 @@ def read_recite(pdf_id):
     Page for reading PDF, taking notes, and choosing chapters for notes.
     """
     try:
-        pdf = get_object_by_id(PDF, pdf_id)
         return render_template('readRecite.html', pdf_id=pdf_id)
     except:
         abort(404, "PDF not found.")
@@ -91,7 +89,6 @@ def review(pdf_id):
     Page for choosing chapters to review content with flashcards.
     """
     try:
-        pdf = get_object_by_id(PDF, pdf_id)
         return render_template('review.html', pdf_id=pdf_id)
     except:
         abort(404, "PDF not found.")
@@ -136,7 +133,7 @@ def pdf_object_operations(pdf_id: str):
         case 'GET':
             """
             Retrieves a PDF from the MongoDB database and returns its bytes.
-            Ex: http://localhost:5001/pdf/680be4af29187334e35baad3
+            Ex: http://localhost:5001/pdfs/680be4af29187334e35baad3
             """
             file_data = pdf.file.read()
             file_stream = io.BytesIO(file_data)
@@ -263,22 +260,6 @@ def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             section.notes.append(new_qa)
             pdf.save()
             return new_qa.to_json(), 201
-
-
-# TODO Switch over to new PDF upload API
-# Currently used on the "readRecite" webpage
-# Receives and uploads PDF to MongoDB database
-@app.route('/upload_pdf', methods=['POST'])
-def upload_pdf():
-    file = request.files['pdf_file']
-    if file.filename.endswith(".pdf"):
-        existing_pdf_check = PDF.objects(name=file.filename).first()
-        if existing_pdf_check:
-            return {'message': f'Could not upload: "{file.filename}" already exists.'}, 409
-        new_pdf = PDF(name=file.filename)
-        new_pdf.file.put(file)
-        new_pdf.save()
-        return {'message': f'File "{file.filename}" successfully uploaded.'}, 201
 
 
 if __name__ == '__main__':
