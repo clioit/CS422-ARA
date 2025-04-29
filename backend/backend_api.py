@@ -47,33 +47,43 @@ def instantiate_from_request_json(cls):
 
 @app.route('/')
 def index():
+    """
+    Users login here. Prototype does not require password.
+    """
     return render_template('login.html')
 
-""" Old index.html for reference
-@app.route('/')
-def index():
-    return render_template('index.html', dummy_pdf_id=str(PDF.objects(name='dummy.pdf').first().id))
-"""
 
-# open this html template
-@app.route('/readRecite')
-def readRecite():
-    return render_template('readRecite.html')
-
-# open this html template
 @app.route('/home')
 def home():
+    """
+    Homepage for choosing which PDFs to open.
+    """
     return render_template('home.html')
 
-# open this html template
-@app.route('/review')
-def review():
-    return render_template('review.html')
 
-# open this html template
-@app.route('/surveyQuestion')
-def surveyQuestion():
-    return render_template('surveyQuestion.html')
+@app.route('/pdfs/<pdf_id>/surveyQuestion')
+def surveyQuestion(pdf_id):
+    """
+    Page for reading PDF, taking questions/answers, and adding chapters/sections.
+    """
+    return render_template('surveyQuestion.html', pdf_id=pdf_id)
+
+
+@app.route('/pdfs/<pdf_id>/readRecite')
+def readRecite(pdf_id):
+    """
+    Page for reading PDF, taking notes, and choosing chapters for notes.
+    """
+    return render_template('readRecite.html', pdf_id=pdf_id)
+
+
+@app.route('/pdfs/<pdf_id>/review')
+def review(pdf_id):
+    """
+    Page for choosing chapters to review content with flashcards.
+    """
+    return render_template('review.html', pdf_id=pdf_id)
+
 
 @app.route('/pdfs', methods=['GET', 'POST'])
 def pdf_set_operations():

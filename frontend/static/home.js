@@ -1,4 +1,5 @@
 const PDFArray = [];
+let pdf_id = null;
 
 function logout(){
     console.log("logout clicked!");
@@ -21,7 +22,7 @@ function fetchPDFs() {
       .then(data => {
         PDFArray.length = 0;
         data.forEach(pdf => {
-            PDFArray.push(pdf.name);
+            PDFArray.push({name: pdf.name, id: pdf._id});
         });
         displayDocOptions();
       })
@@ -34,7 +35,7 @@ function fetchPDFs() {
 function displayDocOptions(){
     for (let i = 0; i < PDFArray.length; i++){
         const thisDoc = document.createElement("button");
-        thisDoc.textContent = PDFArray[i];
+        thisDoc.textContent = PDFArray[i].name; // Access the name property
         thisDoc.className = "pdf-button";
         thisDoc.setAttribute('onclick',`displayDocChoice(${i})`);
 
@@ -54,11 +55,12 @@ function displayDocOptions(){
 
 function displayDocChoice(idx){
     const displayArea = document.getElementById("chosen-doc");
-    displayArea.textContent = `You have chosen ${PDFArray[idx]}`;
+    displayArea.textContent = `You have chosen ${PDFArray[idx].name}`;
+    pdf_id = PDFArray[idx].id
 }
 
 function goSQ(){
-    window.location.replace("http://localhost:5001/surveyQuestion");
-  }
+    window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
+}
 
 fetchPDFs();
