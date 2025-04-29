@@ -66,7 +66,11 @@ def surveyQuestion(pdf_id):
     """
     Page for reading PDF, taking questions/answers, and adding chapters/sections.
     """
-    return render_template('surveyQuestion.html', pdf_id=pdf_id)
+    try:
+        pdf = get_object_by_id(PDF, pdf_id)
+        return render_template('surveyQuestion.html', pdf_id=pdf_id)
+    except:
+        abort(404, "PDF not found.")
 
 
 @app.route('/pdfs/<pdf_id>/readRecite')
@@ -74,7 +78,11 @@ def readRecite(pdf_id):
     """
     Page for reading PDF, taking notes, and choosing chapters for notes.
     """
-    return render_template('readRecite.html', pdf_id=pdf_id)
+    try:
+        pdf = get_object_by_id(PDF, pdf_id)
+        return render_template('readRecite.html', pdf_id=pdf_id)
+    except:
+        abort(404, "PDF not found.")
 
 
 @app.route('/pdfs/<pdf_id>/review')
@@ -82,7 +90,11 @@ def review(pdf_id):
     """
     Page for choosing chapters to review content with flashcards.
     """
-    return render_template('review.html', pdf_id=pdf_id)
+    try:
+        pdf = get_object_by_id(PDF, pdf_id)
+        return render_template('review.html', pdf_id=pdf_id)
+    except:
+        abort(404, "PDF not found.")
 
 
 @app.route('/pdfs', methods=['GET', 'POST'])
