@@ -274,11 +274,11 @@ def upload_pdf():
     if file.filename.endswith(".pdf"):
         existing_pdf_check = PDF.objects(name=file.filename).first()
         if existing_pdf_check:
-            return jsonify({'message': f'Could not upload: "{file.filename}" already exists.'}), 409
+            return {'message': f'Could not upload: "{file.filename}" already exists.'}, 409
         new_pdf = PDF(name=file.filename)
         new_pdf.file.put(file)
         new_pdf.save()
-        return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
+        return {'message': f'File "{file.filename}" successfully uploaded.'}, 201
 
 
 if __name__ == '__main__':
