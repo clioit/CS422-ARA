@@ -1,9 +1,14 @@
 /*NAVIGATION*/
 
+function goHome(){
+    window.location.replace("http://localhost:5001/home");
+}
+
 function goRead(){
     window.location.replace("http://localhost:5001/readRecite");
-
 }
+
+
 
 
 
