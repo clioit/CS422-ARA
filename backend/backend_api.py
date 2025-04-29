@@ -62,7 +62,7 @@ def home():
 
 
 @app.route('/pdfs/<pdf_id>/surveyQuestion')
-def surveyQuestion(pdf_id):
+def survey_question(pdf_id):
     """
     Page for reading PDF, taking questions/answers, and adding chapters/sections.
     """
@@ -74,7 +74,7 @@ def surveyQuestion(pdf_id):
 
 
 @app.route('/pdfs/<pdf_id>/readRecite')
-def readRecite(pdf_id):
+def read_recite(pdf_id):
     """
     Page for reading PDF, taking notes, and choosing chapters for notes.
     """
