@@ -35,7 +35,7 @@ function fetchPDFs() {
 function displayDocOptions(){
     for (let i = 0; i < PDFArray.length; i++){
         const thisDoc = document.createElement("button");
-        thisDoc.textContent = PDFArray[i].name; // Access the name property
+        thisDoc.textContent = PDFArray[i].name;
         thisDoc.className = "pdf-button";
         thisDoc.setAttribute('onclick',`displayDocChoice(${i})`);
 
@@ -56,11 +56,19 @@ function displayDocOptions(){
 function displayDocChoice(idx){
     const displayArea = document.getElementById("chosen-doc");
     displayArea.textContent = `You have chosen ${PDFArray[idx].name}`;
+    displayArea.style.color = "black";
     pdf_id = PDFArray[idx].id
+
 }
 
 function goSQ(){
-    window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
+    if (pdf_id) {
+        window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
+    } else {
+        const displayArea = document.getElementById("chosen-doc");
+        displayArea.textContent = "Please select a PDF before proceeding.";
+        displayArea.style.color = "red";
+    }
 }
 
 fetchPDFs();
