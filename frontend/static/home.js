@@ -1,13 +1,38 @@
-// replace with users PDF array
-const PDFArray = [`one`, `two`, `three`]; 
+const PDFArray = [];
 
 function logout(){
     console.log("logout clicked!");
     window.location.replace("http://localhost:5001/");
 }
 
+function fetchPDFs() {
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch('http://localhost:5001/pdfs', {
+        method: 'GET'
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errorData => {
+            throw new Error(errorData.description || 'Unknown error');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        PDFArray.length = 0;
+        data.forEach(pdf => {
+            PDFArray.push(pdf.name);
+        });
+        displayDocOptions();
+      })
+      .catch(error => {
+        console.error("Error: ", error.message);
+        return [];
+      });
+  }
+
 function displayDocOptions(){
-    for(let i=0; i<PDFArray.length; i++){
+    for (let i = 0; i < PDFArray.length; i++){
         const thisDoc = document.createElement("button");
         thisDoc.textContent = PDFArray[i];
         thisDoc.className = "pdf-button";
@@ -32,8 +57,8 @@ function displayDocChoice(idx){
     displayArea.textContent = `You have chosen ${PDFArray[idx]}`;
 }
 
-displayDocOptions();
-
 function goSQ(){
     window.location.replace("http://localhost:5001/surveyQuestion");
   }
+
+fetchPDFs();
