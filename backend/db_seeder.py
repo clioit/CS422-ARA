@@ -1,3 +1,14 @@
+"""
+Database seeder for CS 422 Project 1: ARA.
+
+This file runs on startup of the web server and populates the database
+with various example objects (users, PDFs, notes, etc.). It loads example
+PDFs from a folder called example_documents at the root of the repository.
+
+Author: Ryan Kovatch
+Last modified: 04/25/2025
+"""
+
 import os
 from db_models import *
 
