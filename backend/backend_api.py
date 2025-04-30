@@ -1,3 +1,14 @@
+"""
+Web server for CS 422 Project 1: ARA
+
+This file implements a RESTful API for committing and retrieving PDF
+and note data from a MongoDB instance. It also renders and serves the
+HTML templates in frontend/templates.
+
+Authors: Ryan Kovatch, Song Zhang, Derek van Devender
+Last modified: 04/29/2025
+"""
+
 import mongoengine
 from db_models import *
 from db_seeder import seed_db
