@@ -18,7 +18,6 @@ from mongoengine import connect
 from os import environ as env
 import io
 
-
 app = Flask(__name__,
             template_folder='/frontend/templates',
             static_folder='/frontend/static')
@@ -28,17 +27,17 @@ if User.objects.count() == 0:
     seed_db()
 
 
-def get_object_by_id(collection, obj_id: str, is_array=False):
+def get_object_by_id(collection, obj_id: str, is_array=False, **addl_filters):
     """Gets an object from a collection/array by its ID."""
     try:
         if is_array:
-            obj = collection.filter(_id=obj_id)
+            obj = collection.filter(_id=obj_id, **addl_filters)
             if len(obj) == 0:
                 abort(404, f"{repr(collection)} object with ID {obj_id} not found.")
             elif len(obj) == 1:
                 return obj[0]
         else:
-            obj = collection.objects(id=obj_id).first()
+            obj = collection.objects(id=obj_id, **addl_filters).first()
             if obj is not None:
                 return obj
             else:
@@ -80,12 +79,14 @@ def json_response(json_str: str, status_code=200):
 
 def requires_login(route):
     """Redirects to the login page if the user is not auth'd."""
+
     @wraps(route)
     def login_check_wrapper(**kwargs):
         if "user" in request.cookies:
             return route(**kwargs)
         else:
             return redirect(url_for("login"))
+
     return login_check_wrapper
 
 
@@ -334,8 +335,16 @@ def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes', methods=['GET', 'POST'])
+@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET', 'POST'])
 @requires_login
 def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
+    if request.path.endswith("notes"):
+        note_class = Note
+    elif request.path.endswith("qas"):
+        note_class = QuestionAnswer
+    else:
+        abort(500)  # This should never happen
+
     pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
     section = get_object_by_id(chapter.sections, section_id, is_array=True)
@@ -343,37 +352,46 @@ def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
     match request.method:
         case 'GET':
             """Lists notes in a section of a PDF."""
-            section_notes = section.notes.filter(_cls="Note")
-            return [{
-                "_id": str(note._id),  # TODO: don't access protected attr
-                "start_page": note.start_page,
-                "text": note.text
-            } for note in section_notes]
+            section_notes = section.notes.filter(_cls=note_class.__name__)
+            if note_class == Note:
+                return [{
+                    "_id": str(note._id),  # TODO: don't access protected attr
+                    "start_page": note.start_page,
+                    "text": note.text
+                } for note in section_notes]
+            elif note_class == QuestionAnswer:
+                return [{
+                    "_id": str(note._id),  # TODO: don't access protected attr
+                    "start_page": note.start_page,
+                    "question": note.question,
+                    "text": note.text
+                } for note in section_notes]
 
         case 'POST':
             """Creates a new note on a PDF."""
-            new_note = instantiate_from_request_json(Note)
+            new_note = instantiate_from_request_json(note_class)
             section.notes.append(new_note)
             pdf.save()
             return json_response(new_note.to_json(), 201)
 
 
-# TODO: abstract out code that's similar to qa_object_operations
-
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes/<note_id>', methods=['GET', 'PATCH',
                                                                                                   'DELETE'])
+@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas/<note_id>', methods=['GET', 'PATCH',
+                                                                                                'DELETE'])
 @requires_login
 def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
+    if "/notes/" in request.path:
+        note_class = Note
+    elif "/qas/" in request.path:
+        note_class = QuestionAnswer
+    else:
+        abort(500)  # This should never happen
+
     pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
     section = get_object_by_id(chapter.sections, section_id, is_array=True)
-
-    # TODO: replace this code with get_object_by_id
-    section_notes = section.notes.filter(_cls="Note", _id=note_id)
-    if len(section_notes) == 0:
-        abort(404, description="Note not found.")
-    else:
-        this_note = section_notes[0]
+    this_note = get_object_by_id(section.notes, note_id, is_array=True, _cls=note_class.__name__)
 
     match request.method:
         case 'GET':
@@ -385,6 +403,8 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
             new_note = instantiate_from_request_json(Note)
             if new_note.text != this_note.text:
                 this_note.text = new_note.text
+            if note_class == QuestionAnswer and new_note.question != this_note.question:
+                this_note.question = new_note.question
             pdf.save()
             return json_response(this_note.to_json())
 
@@ -393,70 +413,6 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
             this_note.delete()
             pdf.save()
             return {"success": True}
-
-
-# TODO: abstract out code that's similar to note_object_operations
-@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes/<note_id>', methods=['GET', 'PATCH',
-                                                                                                  'DELETE'])
-@requires_login
-def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
-    pdf = get_user_pdf(pdf_id)
-    chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
-    section = get_object_by_id(chapter.sections, section_id, is_array=True)
-
-    # TODO: replace this code with get_object_by_id
-    section_qas = section.notes.filter(_cls="QuestionAnswer", _id=note_id)
-    if len(section_qas) == 0:
-        abort(404, description="Note not found.")
-    else:
-        this_qa = section_qas[0]
-
-    match request.method:
-        case 'GET':
-            """Retrieves a single note."""
-            return json_response(this_qa.to_json())
-
-        case 'PATCH':
-            """Edits the text of a single note."""
-            new_qa = instantiate_from_request_json(Note)
-            if new_qa.question != this_qa.question:
-                this_qa.question = new_qa.question
-            if new_qa.text != this_qa.text:
-                this_qa.text = new_qa.text
-            pdf.save()
-            return json_response(this_qa.to_json())
-
-        case 'DELETE':
-            """Deletes a single note."""
-            this_qa.delete()
-            pdf.save()
-            return {"success": True}
-
-
-@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET', 'POST'])
-@requires_login
-def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
-    pdf = get_user_pdf(pdf_id)
-    chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
-    section = get_object_by_id(chapter.sections, section_id, is_array=True)
-
-    match request.method:
-        case 'GET':
-            """Lists Q&As in a section of a PDF."""
-            section_notes = section.notes.filter(_cls="QuestionAnswer")
-            return [{
-                "_id": str(note._id),  # TODO: don't access protected attr
-                "start_page": note.start_page,
-                "question": note.question,
-                "text": note.text
-            } for note in section_notes]
-
-        case 'POST':
-            """Creates a new Q&A on a PDF."""
-            new_qa = instantiate_from_request_json(QuestionAnswer)
-            section.notes.append(new_qa)
-            pdf.save()
-            return json_response(new_qa.to_json(), 201)
 
 
 if __name__ == '__main__':
