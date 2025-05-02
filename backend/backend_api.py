@@ -1,7 +1,7 @@
 import mongoengine
 from db_models import *
 from db_seeder import seed_db
-from flask import Flask, render_template, send_file, request, abort
+from flask import Flask, render_template, send_file, request, abort, jsonify
 from mongoengine import connect
 from os import environ as env
 import io
