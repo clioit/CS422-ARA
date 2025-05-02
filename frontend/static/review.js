@@ -77,19 +77,20 @@ function goHome(){
   }
 
 
-
+// Should only retrieve/display the text from Survey/Questions and ?readRecite?
 // Need to know pdf_id from backend (already passed in review.html), and chapter_id/section_id
-let chapterId = null;
-let sectionId = null;
+//from backend @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET', 'POST'])
+let chapter_id = null;
+let section_id = null;
 
 // Load flashcards when user selects chapter and section
 function loadFlashcards() {
-    if (!pdf_id || !chapterId || !sectionId) {
+    if (!pdf_id || !chapter_id || !section_id) {
         console.log("Missing selection");
         return;
     }
 
-    fetch(`/pdfs/${pdf_id}/chapters/${chapterId}/sections/${sectionId}/qas`)
+    fetch(`/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${section_id}/qas`)
     .then(response => response.json())
     .then(data => {
         const container = document.querySelector('.columns__cards--content');
@@ -113,7 +114,7 @@ function loadFlashcards() {
            container.appendChild(cardDiv);
         });
 
-       // Adds event listeners for each "Show Answer" button
+       //Event listeners for each "Show Answer" button
         const showButtons = document.querySelectorAll('.show-answer-btn');
         showButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -121,5 +122,24 @@ function loadFlashcards() {
                 answer.style.display = 'block';
                 btn.style.display = 'none';
             });
+        });
+    })
+    .catch(error => {
+        console.error("Error loading flashcards:", error);
+    });
+}
 
- //review.js should only retrieve/display  the text from Survery/Questions
+// These documents are for users to be able to choose which chapter/section flashcards to fetch.
+// When user selects a chapter (from dropdown)
+document.getElementById('chapter').addEventListener('change', function() {
+    chapter_id = this.value;
+    // I may also want to clear the section_id or load sections here?
+});
+
+// When user clicks on a section (assumed to be in list with section-tag and data-section-id)
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('section-tag')) {
+        section_id = e.target.dataset.section=_id;
+        loadFlashcards();
+    }
+});
