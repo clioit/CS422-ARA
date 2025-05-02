@@ -1,11 +1,6 @@
 const PDFArray = [];
 let pdf_id = null;
 
-function logout(){
-    console.log("logout clicked!");
-    window.location.replace("http://localhost:5001/");
-}
-
 function fetchPDFs() {
     // Fetches all existing PDFs from the database to populate PDFArray[]
     return fetch('http://localhost:5001/pdfs', {
