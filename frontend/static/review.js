@@ -78,11 +78,11 @@ function goHome(){
 
 
 
-//Need to know pdf_id from backend (already passed in review.html), and chapterId/sectionId
+// Need to know pdf_id from backend (already passed in review.html), and chapter_id/section_id
 let chapterId = null;
 let sectionId = null;
 
-// Load flashcards when user selects chapter and section
+// Loads flashcards when user selects chapter and section
 function loadFlashcards() {
     if (!pdf_id || !chapterId || !sectionId) {
         console.log("Missing selection");
@@ -92,6 +92,28 @@ function loadFlashcards() {
     fetch(`/pdfs/${pdf_id}/chapters/${chapterId}/sections/${sectionId}/qas`)
     .then(response => response.json())
     .then(data => {
+        const container = document.querySelector('.columns__cards--content');
+        container.innerHTML = '';
 
+        if (data.length === 0) {
+            container.innerHTML = "<p>No flashcards yet.</p>";
+            return;
+        }
+
+        data.forEach(card => {
+            const cardDiv = document.createElement('div');
+            cardDiv.classList.add('flashcard');
+
+            cardDiv.innerHTML = `
+                <h3>Q: ${card.question}</h3>
+                <button class="show-answer-btn">Show Answer</button>
+                <p class="answer" style="display: none;">A: ${card.text ? card.text : "No answer yet."}</p>
+            `;
+
+           container.appendChild(cardDiv);
+        });
+
+
+        
 
  //review.js should only retrieve/display  the text from Survery/Questions
