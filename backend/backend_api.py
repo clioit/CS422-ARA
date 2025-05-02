@@ -89,9 +89,12 @@ def requires_login(route):
     @wraps(route)
     def login_check_wrapper(**kwargs):
         if "user" in request.cookies:
-            return route(**kwargs)
+            if User.objects(id=request.cookies["user"]).first() is not None:
+                return route(**kwargs)  # Client is logged in
+            else:
+                return redirect(url_for("logout"))  # Client has stored an invalid user ID, clear it
         else:
-            return redirect(url_for("login"))
+            return redirect(url_for("login"))  # Client is not logged in
 
     return login_check_wrapper
 
