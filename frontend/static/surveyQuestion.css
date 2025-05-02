@@ -149,6 +149,8 @@ ul {
 
 .section-topper {
   display: flex;
+  flex-direction: column;
+  color: red;
 }
 
 .review:hover {
@@ -192,4 +194,17 @@ ul {
 .remove-btn {
   text-align: right;
   max-width: 100%;
+}
+
+.add-area{
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+#chapters-btn{
+  max-width: fit-content;
+}
+
+#start-pg{
+  max-width: fit-content;
 }

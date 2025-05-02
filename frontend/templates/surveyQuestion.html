@@ -17,12 +17,15 @@
 <main>
   <div class="columns">
     <div class="section-container">
-      <div class="section-topper">
-    <label for="chapter">Choose a Chapter</label>
-    <select id="chapter" onchange="fillTags()">
-        <option value="" selected></option>
+      <div class="section-topper" id="section-topper">
+
+    
+    <select id="chapter" onchange="setChap()">
+        <option id ="no-select" value="" selected>Please Load Chapters</option>
         <div class="chaps">choose</div>
     </select>
+    <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button>
+    
   </div>
 <div class="sections">
 <ul id= "tags" class="tags"></ul>
