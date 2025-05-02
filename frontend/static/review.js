@@ -82,7 +82,7 @@ function goHome(){
 let chapterId = null;
 let sectionId = null;
 
-// Loads flashcards when user selects chapter and section
+// Load flashcards when user selects chapter and section
 function loadFlashcards() {
     if (!pdf_id || !chapterId || !sectionId) {
         console.log("Missing selection");
@@ -113,7 +113,13 @@ function loadFlashcards() {
            container.appendChild(cardDiv);
         });
 
-
-        
+       // Adds event listeners for each "Show Answer" button
+        const showButtons = document.querySelectorAll('.show-answer-btn');
+        showButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const answer = btn.nextElementSibling;
+                answer.style.display = 'block';
+                btn.style.display = 'none';
+            });
 
  //review.js should only retrieve/display  the text from Survery/Questions
