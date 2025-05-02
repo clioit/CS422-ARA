@@ -137,11 +137,11 @@ function goRead() {
 
 let questions = [];
 
-function fetchQAS(id){
-  let tag_id = id;
-  console.log(tag_id);
+function getData(id){
+  //let tag_id = id;
+  //console.log(tag_id);
     // Fetches all existing PDFs from the database to populate PDFArray[]
-    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${id}/qas`, {
       method: 'GET'
   })
     .then(response => {

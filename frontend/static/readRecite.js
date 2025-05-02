@@ -44,8 +44,8 @@ let note_id = null;
 // }
 
 // Fetches note for the current chapter and section
-function fetchNote(tag) {
-  return fetch(`/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${tag}/notes`, {
+function getData(tag) {
+  return fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag}/notes`, {
     method: "GET",
   })
     .then((response) => response.json())

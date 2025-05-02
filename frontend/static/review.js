@@ -68,6 +68,10 @@
 //    updateSections();
 // }
 
+function getData(id){
+    console.log("ok");
+}
+
 
 /* NAVIGATION */
 

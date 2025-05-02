@@ -60,7 +60,7 @@ function setChap(){
       .then(data => {
         sectTags.length = 0;
         data.forEach(tag => {
-          sectTags.push({title: tag.title, startPage: tag.start_page, notesCount: tag.notes_count });
+          sectTags.push({title: tag.title, startPage: tag.start_page, notesCount: tag.notes_count, id: tag._id });
         });
         //displayDocOptions();
         console.log(sectTags)
@@ -114,9 +114,9 @@ function updateSections() {
       const viewButton = document.createElement("button");
       viewButton.textContent = "VIEW SET";
       viewButton.className = "view-button";
-     // viewButton.setAttribute("onclick", /*ARBITRARY FUNCTION fetchNote()*/);
+      viewButton.setAttribute("onclick", getData(`${sectTags[i].id}`));
         //view BUtton attatches id to button, calls correct function for data load*/
-        
+
       const rmvButton = document.createElement("button");
       rmvButton.textContent = "REMOVE SET";
       //saveMe.setAttribute("onclick", `removeS()`);
