@@ -19,9 +19,10 @@
         <form action="/login" method="post">
             <label for="username">USER:</label>
             <select name="username" id="username">
-                <option value="bob">Bob</option>
-                <option value="alice">Alice</option>
-                <option value="eva">Eva</option>
+                <option value="" disabled selected>Select...</option>
+                {% for user in users %}
+                    <option value="{{ user.username }}">{{ user.username }}</option>
+                {% endfor %}
             </select>
             <button class="btn" type="submit">LOGIN</button>
         </form>
