@@ -1,6 +1,54 @@
 const PDFArray = [];
 let pdf_id = null;
 
+function uploadPDF() {
+  // uploadPDF uploads the pdf from user into the database
+  // get uploaded pdf and any messages
+  const fileInput = document.getElementById('pdfInput');
+  const file = fileInput.files[0];
+  const message = document.getElementById('message');
+
+  // check if valid pdf type
+  if (!file || file.type !== 'application/pdf') {
+    message.textContent = 'Please select a valid PDF file.';
+    return;
+  }
+
+  // create data for sending to /upload_pdf
+  const formData = new FormData();
+  formData.append('pdf_file', file);
+
+  // POST request to endpoint
+  fetch('/pdfs', {
+    method: 'POST',
+    body: formData
+  })
+  // check response is json
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return { status: response.status, body: data };
+    } else {
+      const text = await response.text();
+      throw new Error(`Unexpected response: ${text}`);
+    }
+  })
+  // handle result
+  .then(result => {
+    if (result.status === 201) {
+      message.textContent = result.body.message;
+      setTimeout(() => window.location.reload(), 1500);
+    } else {
+      message.textContent = result.body.message || 'Upload failed.';
+    }
+  })
+  .catch(error => {
+    message.textContent = 'An error occurred: ' + error.message;
+  });
+}
+
+
 function fetchPDFs() {
     // Fetches all existing PDFs from the database to populate PDFArray[]
     return fetch('http://localhost:5001/pdfs', {
