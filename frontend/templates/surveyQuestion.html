@@ -10,7 +10,7 @@
     <div class="page-top">
     <h1 class="page-top__page-title">ARA: <span class="red">Survey & Question</span></h1>
     <div class="page-top__user-corner">
-      <h3 id="user">username</h3>
+      <h3 id="user">{{ request.cookies['user'] }}</h3>
       <button class="home-button" onclick="goHome()">HOME</button>
     </div>
     </div>

@@ -17,7 +17,7 @@ class Note(EmbeddedDocument):
     """A note attached to a page of a PDF."""
     meta = {'allow_inheritance': True}
     _id = StringField(required=True, default=str(ObjectId()))
-    start_page = IntField(required=True)
+    start_page = IntField()
     text = StringField(required=True)
 
 
