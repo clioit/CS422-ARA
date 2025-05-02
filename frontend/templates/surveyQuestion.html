@@ -71,12 +71,18 @@
 </div>
   <script>
     const pdf_id = "{{ pdf_id }}";
-  </script>
+    let chap_id = "{{ chapter_id }}";
+    let tag_id = "{{ section_id }}";
+    </script>
+
   <!-- <script src="{{url_for('static', filename='review.js')}}">
   </script> -->
   <!-- <script src="{{url_for('static', filename='readRecite.js')}}">
   </script> -->
+  <script src="{{url_for('static', filename='loadingTags.js')}}">
+  </script>
     <script src="{{url_for('static', filename='surveyQuestion.js')}}">
   </script>
+
 </body>
 </html>

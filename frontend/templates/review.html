@@ -17,16 +17,25 @@
         </div>
     <main>
         <div class="columns">
-            <div class="columns__sections">
-                <label for="chapter">Choose a Chapter</label>
-                <select id="chapter" onchange="fillTags()" type="array">
-                    <option value="" selected></option>
-                    <div class="chaps"></div>
-                </select>
-        <div class="sections">
-            <ul id= "tags" class="tags"></ul>
-        </div>
-        </div>
+            <div class="section-container">
+                <div class="section-topper" id="section-topper">
+          
+              
+              <select id="chapter" onchange="setChap()">
+                  <option id ="no-select" value="" selected>Please Load Chapters</option>
+                  <div class="chaps">choose</div>
+              </select>
+              <span id = "page">  </span>
+              <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button>
+              
+            </div>
+          <div class="sections">
+          <ul id= "tags" class="tags"></ul>
+          <label for="new-section">Section Name</label>
+          <input type="text" id="new-section">
+          <button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
+          </div>
+          </div>
         <div class="columns__cards">
             <div class="columns__cards--buttons"></div>
             <div class="columns__cards--content"></div>
@@ -34,6 +43,17 @@
         </div>
 </main>
 </div>
+<script>
+    const pdf_id = "{{ pdf_id }}";
+  </script>
+    <script>
+      let tag_id = "{{ section_id }}";
+    </script>
+        <script>
+          let chap_id = "{{ chapter_id }}";
+        </script>
+<script src="{{url_for('static', filename='loadingTags.js')}}">
+  </script>
 <script src="{{url_for('static', filename='review.js')}}"></script>
 </body>
 </html>
