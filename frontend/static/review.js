@@ -75,3 +75,23 @@ function clearSections(){
 function goHome(){
     window.location.replace("http://localhost:5001/home");
   }
+
+
+
+//Need to know pdf_id from backend (already passed in review.html), and chapterId/sectionId
+let chapterId = null;
+let sectionId = null;
+
+// Load flashcards when user selects chapter and section
+function loadFlashcards() {
+    if (!pdf_id || !chapterId || !sectionId) {
+        console.log("Missing selection");
+        return;
+    }
+
+    fetch(`/pdfs/${pdf_id}/chapters/${chapterId}/sections/${sectionId}/qas`)
+    .then(response => response.json())
+    .then(data => {
+
+
+ //review.js should only retrieve/display  the text from Survery/Questions
