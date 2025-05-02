@@ -48,6 +48,7 @@ def get_object_by_id(collection, obj_id: str, is_array=False):
 
 
 def get_user_pdf(pdf_id: str):
+    """Gets a user's PDF by its ID."""
     user = get_object_by_id(User, request.cookies["user"])
     user_pdf_ids = [str(doc.id) for doc in user.documents]
     if pdf_id in user_pdf_ids:
@@ -64,6 +65,17 @@ def instantiate_from_request_json(cls):
         return new_obj
     except ValidationError as e:
         return abort(400, str(e))
+
+
+def json_response(json_str: str, status_code=200):
+    """
+    Creates a response object for payloads that are not
+    implicitly marked as application/json.
+    """
+    resp = make_response(json_str)
+    resp.status_code = status_code
+    resp.content_type = "application/json"
+    return resp
 
 
 def requires_login(route):
@@ -85,9 +97,10 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Page for logging in. Passwords are not currently implemented."""
     match request.method:
         case 'GET':
-            """Users login here. Prototype does not require password."""
+            """Users log in here."""
             return render_template('login.html')
 
         case 'POST':
@@ -101,6 +114,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    """Logs out the current user."""
     resp = make_response(redirect(url_for("login")))
     resp.set_cookie('user', '', expires=0)
     return resp
@@ -109,9 +123,7 @@ def logout():
 @app.route('/home')
 @requires_login
 def home():
-    """
-    Homepage for choosing which PDFs to open.
-    """
+    """Homepage for choosing which PDFs to open."""
     if "user" in request.cookies:
         return render_template('home.html')
     else:
@@ -121,27 +133,21 @@ def home():
 @app.route('/pdfs/<pdf_id>/surveyQuestion')
 @requires_login
 def survey_question(pdf_id):
-    """
-    Page for reading PDF, taking questions/answers, and adding chapters/sections.
-    """
+    """Page for reading PDF, taking questions/answers, and adding chapters/sections."""
     return render_template('surveyQuestion.html', pdf_id=pdf_id)
 
 
 @app.route('/pdfs/<pdf_id>/readRecite')
 @requires_login
 def read_recite(pdf_id):
-    """
-    Page for reading PDF, taking notes, and choosing chapters for notes.
-    """
+    """Page for reading PDF, taking notes, and choosing chapters for notes."""
     return render_template('readRecite.html', pdf_id=pdf_id)
 
 
 @app.route('/pdfs/<pdf_id>/review')
 @requires_login
 def review(pdf_id):
-    """
-    Page for choosing chapters to review content with flashcards.
-    """
+    """Page for choosing chapters to review content with flashcards."""
     return render_template('review.html', pdf_id=pdf_id)
 
 
@@ -247,7 +253,7 @@ def chapter_set_operations(pdf_id: str):
             new_chapter = instantiate_from_request_json(Chapter)
             pdf.chapters.append(new_chapter)
             pdf.save()
-            return new_chapter.to_json(), 201
+            return json_response(new_chapter.to_json(), 201)
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>', methods=['GET', 'PATCH', 'DELETE'])
@@ -259,7 +265,7 @@ def chapter_object_operations(pdf_id: str, chapter_id: str):
     match request.method:
         case 'GET':
             """Gets a single chapter of a PDF."""
-            return this_chapter.to_json(), 200
+            return json_response(this_chapter.to_json())
 
         case 'PATCH':
             """Renames a single chapter of a PDF."""
@@ -267,13 +273,13 @@ def chapter_object_operations(pdf_id: str, chapter_id: str):
             if new_chapter.title != this_chapter.title:
                 this_chapter.title = new_chapter.title
             pdf.save()
-            return this_chapter.to_json(), 200
+            return json_response(this_chapter.to_json())
 
         case 'DELETE':
             """Deletes a single chapter of a PDF, INCLUDING ALL OF ITS SECTIONS AND NOTES."""
             this_chapter.delete()
             pdf.save()
-            return {"success": True}, 200
+            return {"success": True}
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections', methods=['GET', 'POST'])
@@ -297,7 +303,7 @@ def section_set_operations(pdf_id: str, chapter_id: str):
             new_section = instantiate_from_request_json(Section)
             chapter.sections.append(new_section)
             pdf.save()
-            return new_section.to_json(), 201
+            return json_response(new_section.to_json(), 201)
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>', methods=['GET', 'PATCH', 'DELETE'])
@@ -310,7 +316,7 @@ def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
     match request.method:
         case 'GET':
             """Gets a single section of a chapter."""
-            return this_section.to_json(), 200
+            return json_response(this_section.to_json())
 
         case 'PATCH':
             """Renames a section of a chapter."""
@@ -318,13 +324,13 @@ def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
             if new_section.title != this_section.title:
                 this_section.title = new_section.title
             pdf.save()
-            return this_section.to_json(), 200
+            return json_response(this_section.to_json())
 
         case 'DELETE':
             """Deletes a section of a chapter, INCLUDING ALL OF ITS NOTES."""
             this_section.delete()
             pdf.save()
-            return {"success": True}, 200
+            return {"success": True}
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes', methods=['GET', 'POST'])
@@ -349,7 +355,7 @@ def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             new_note = instantiate_from_request_json(Note)
             section.notes.append(new_note)
             pdf.save()
-            return new_note.to_json(), 201
+            return json_response(new_note.to_json(), 201)
 
 
 # TODO: abstract out code that's similar to qa_object_operations
@@ -372,7 +378,7 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
     match request.method:
         case 'GET':
             """Retrieves a single note."""
-            return this_note.to_json(), 200
+            return json_response(this_note.to_json())
 
         case 'PATCH':
             """Edits the text of a single note."""
@@ -380,13 +386,13 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
             if new_note.text != this_note.text:
                 this_note.text = new_note.text
             pdf.save()
-            return this_note.to_json(), 200
+            return json_response(this_note.to_json())
 
         case 'DELETE':
             """Deletes a single note."""
             this_note.delete()
             pdf.save()
-            return {"success": True}, 200
+            return {"success": True}
 
 
 # TODO: abstract out code that's similar to note_object_operations
@@ -408,7 +414,7 @@ def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id:
     match request.method:
         case 'GET':
             """Retrieves a single note."""
-            return this_qa.to_json(), 200
+            return json_response(this_qa.to_json())
 
         case 'PATCH':
             """Edits the text of a single note."""
@@ -418,13 +424,13 @@ def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id:
             if new_qa.text != this_qa.text:
                 this_qa.text = new_qa.text
             pdf.save()
-            return this_qa.to_json(), 200
+            return json_response(this_qa.to_json())
 
         case 'DELETE':
             """Deletes a single note."""
             this_qa.delete()
             pdf.save()
-            return {"success": True}, 200
+            return {"success": True}
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET', 'POST'])
@@ -450,7 +456,7 @@ def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             new_qa = instantiate_from_request_json(QuestionAnswer)
             section.notes.append(new_qa)
             pdf.save()
-            return new_qa.to_json(), 201
+            return json_response(new_qa.to_json(), 201)
 
 
 if __name__ == '__main__':
