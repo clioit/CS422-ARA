@@ -56,6 +56,12 @@ def get_user_pdf(pdf_id: str):
         abort(404, f"User PDF with ID {pdf_id} not found.")
 
 
+def get_username():
+    """Gets the username of the current user."""
+    user = get_object_by_id(User, request.cookies["user"])
+    return user.username
+
+
 def instantiate_from_request_json(cls):
     """Instantiates a class from a JSON object in the request body."""
     try:
@@ -102,15 +108,18 @@ def login():
     match request.method:
         case 'GET':
             """Users log in here."""
-            return render_template('login.html')
+            return render_template("login.html", users=User.objects())
 
         case 'POST':
             """Processes login form and sets user cookie."""
-            username = request.form['username']
+            username = request.form["username"]
             user = User.objects(username=username).first()
-            resp = make_response(redirect(url_for("home")))
-            resp.set_cookie("user", str(user.id), max_age=3600)
-            return resp
+            if user is not None:
+                resp = make_response(redirect(url_for("home")))
+                resp.set_cookie("user", str(user.id), max_age=3600)
+                return resp
+            else:
+                return redirect(url_for("login"))
 
 
 @app.route('/logout')
@@ -126,7 +135,7 @@ def logout():
 def home():
     """Homepage for choosing which PDFs to open."""
     if "user" in request.cookies:
-        return render_template('home.html')
+        return render_template('home.html', get_username=get_username)
     else:
         return redirect(url_for("login"))
 
@@ -135,21 +144,21 @@ def home():
 @requires_login
 def survey_question(pdf_id):
     """Page for reading PDF, taking questions/answers, and adding chapters/sections."""
-    return render_template('surveyQuestion.html', pdf_id=pdf_id)
+    return render_template('surveyQuestion.html', pdf_id=pdf_id, get_username=get_username)
 
 
 @app.route('/pdfs/<pdf_id>/readRecite')
 @requires_login
 def read_recite(pdf_id):
     """Page for reading PDF, taking notes, and choosing chapters for notes."""
-    return render_template('readRecite.html', pdf_id=pdf_id)
+    return render_template('readRecite.html', pdf_id=pdf_id, get_username=get_username)
 
 
 @app.route('/pdfs/<pdf_id>/review')
 @requires_login
 def review(pdf_id):
     """Page for choosing chapters to review content with flashcards."""
-    return render_template('review.html', pdf_id=pdf_id)
+    return render_template('review.html', pdf_id=pdf_id, get_username=get_username)
 
 
 @app.route('/pdfs', methods=['GET', 'POST'])
