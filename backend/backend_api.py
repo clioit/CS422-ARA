@@ -115,12 +115,14 @@ def login():
 
         case 'POST':
             """Processes login form and sets user cookie."""
-            username = request.form["username"]
-            user = User.objects(username=username).first()
-            if user is not None:
-                resp = make_response(redirect(url_for("home")))
-                resp.set_cookie("user", str(user.id), max_age=3600)
-                return resp
+            if "username" in request.form:
+                user = User.objects(username=request.form["username"]).first()
+                if user is not None:
+                    resp = make_response(redirect(url_for("home")))
+                    resp.set_cookie("user", str(user.id), max_age=3600)
+                    return resp
+                else:
+                    return redirect(url_for("login"))
             else:
                 return redirect(url_for("login"))
 
