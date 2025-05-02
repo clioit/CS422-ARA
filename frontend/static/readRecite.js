@@ -1,3 +1,5 @@
+/**NOTES */
+
 // Check if there's already a saved note in localStorage
 window.onload = function () {
   const savedNotes = localStorage.getItem("userNotes");
@@ -27,8 +29,19 @@ document.querySelector("form").addEventListener("submit", function (e) {
     );
 });
 
+
+
+/**NAVIGATION */
+
 function goHome(){
   window.location.replace("http://localhost:5001/home");
 }
 
+function goReview(){
+  window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/review`);
+}
+
+function goSQ(){
+  window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
+}
 

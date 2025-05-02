@@ -1,8 +1,10 @@
+/* SECTION TAGS SECTION */
+
 // stand in arrays, need functions to load from BE
 const sectArray = [[`hi`,`hello`, `bye`],[`hi`,`ski`, `bye`]];
 const chapArray = [[`one`, 0],[`two`, 1]];
 
-
+// loads chapters into select menu
 function fillChapters(){
     for(let i=0; i<chapArray.length;i++){
         const chapHolder = document.createElement("div");
@@ -20,8 +22,10 @@ function fillChapters(){
 
 fillChapters();
 
+// array for 
 let sectTags = [];
 
+// populates sectTags array with all sections from chosen chapter
 function fillTags(){
     clearSections();
     const chap = document.getElementById("chapter").value;
@@ -33,6 +37,7 @@ function fillTags(){
     updateSections();
 }
 
+// displays sectTags as OSO (On Screen Object)
 function updateSections(){
     const tagList = document.getElementById("tags");
     tagList.innerHTML = '';
@@ -60,8 +65,12 @@ function updateSections(){
 
 function clearSections(){
    sectTags = [];
-   updateSections
+   updateSections();
 }
+
+
+/* NAVIGATION */
+
 
 function goHome(){
     window.location.replace("http://localhost:5001/home");
