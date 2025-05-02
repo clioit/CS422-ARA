@@ -25,7 +25,7 @@ function uploadPDF() {
   formData.append('pdf_file', file);
 
   // POST request to endpoint
-  fetch('/upload_pdf', {
+  fetch('/pdfs', {
     method: 'POST',
     body: formData
   })
