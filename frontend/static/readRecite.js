@@ -17,35 +17,35 @@ let chapter_id = null;
 let section_id = null;
 let note_id = null;
 
-// One time fetch of a chapter
-// TODO: Implement changing chapters/sections and remove this function
-function fetchChapter() {
-  return fetch(`/pdfs/${pdf_id}/chapters`, {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((chapters) => {
-      chapter_id = chapters[0]._id;
-      return fetchSection(chapter_id);
-    });
-}
+// // One time fetch of a chapter
+// // TODO: Implement changing chapters/sections and remove this function
+// function fetchChapter() {
+//   return fetch(`/pdfs/${pdf_id}/chapters`, {
+//     method: "GET",
+//   })
+//     .then((response) => response.json())
+//     .then((chapters) => {
+//       chapter_id = chapters[0]._id;
+//       return fetchSection(chapter_id);
+//     });
+// }
 
-// One time fetch of a section
-// TODO: Implement changing chapters/sections and remove this function
-function fetchSection(chapterId) {
-  return fetch(`/pdfs/${pdf_id}/chapters/${chapterId}/sections`, {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((sections) => {
-      section_id = sections[0]._id;
-      return fetchNote();
-    });
-}
+// // One time fetch of a section
+// // TODO: Implement changing chapters/sections and remove this function
+// function fetchSection(chapterId) {
+//   return fetch(`/pdfs/${pdf_id}/chapters/${chapterId}/sections`, {
+//     method: "GET",
+//   })
+//     .then((response) => response.json())
+//     .then((sections) => {
+//       section_id = sections[0]._id;
+//       return fetchNote();
+//     });
+// }
 
 // Fetches note for the current chapter and section
-function fetchNote() {
-  return fetch(`/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${section_id}/notes`, {
+function fetchNote(tag) {
+  return fetch(`/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${tag}/notes`, {
     method: "GET",
   })
     .then((response) => response.json())
@@ -90,7 +90,7 @@ function saveNote(noteText) {
 // Loads the first chapter, section, and its note info
 // TODO: Update chapter_id and section_id, then run fetchNote()
 window.onload = function () {
-  fetchChapter();
+ // fetchChapter();
   //fetchNote();
 };
 
