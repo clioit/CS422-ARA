@@ -12,7 +12,8 @@ Last modified: 04/29/2025
 import mongoengine
 from db_models import *
 from db_seeder import seed_db
-from flask import Flask, render_template, send_file, request, abort
+from flask import Flask, render_template, send_file, request, make_response, redirect, url_for, abort
+from functools import wraps
 from mongoengine import connect
 from os import environ as env
 import io
@@ -56,23 +57,59 @@ def instantiate_from_request_json(cls):
         return abort(400, str(e))
 
 
+def requires_login(route):
+    """Redirects to the login page if the user is not auth'd."""
+    @wraps(route)
+    def login_check_wrapper(**kwargs):
+        if "user" in request.cookies:
+            return route(**kwargs)
+        else:
+            return redirect(url_for("login"))
+    return login_check_wrapper
+
+
 @app.route('/')
 def index():
-    """
-    Users login here. Prototype does not require password.
-    """
-    return render_template('login.html')
+    """Redirects to the home page."""
+    return redirect(url_for("home"))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    match request.method:
+        case 'GET':
+            """Users login here. Prototype does not require password."""
+            return render_template('login.html')
+
+        case 'POST':
+            """Processes login form and sets user cookie."""
+            username = request.form['username']
+            resp = make_response(redirect(url_for("home")))
+            resp.set_cookie("user", username, max_age=3600)
+            return resp
+
+
+@app.route('/logout')
+def logout():
+    resp = make_response(redirect(url_for("login")))
+    resp.set_cookie('user', '', expires=0)
+    return resp
 
 
 @app.route('/home')
+@requires_login
 def home():
     """
     Homepage for choosing which PDFs to open.
     """
-    return render_template('home.html')
+    if "user" in request.cookies:
+        return render_template('home.html')
+    else:
+        return redirect(url_for("login"))
 
 
 @app.route('/pdfs/<pdf_id>/surveyQuestion')
+@requires_login
 def survey_question(pdf_id):
     """
     Page for reading PDF, taking questions/answers, and adding chapters/sections.
@@ -81,6 +118,7 @@ def survey_question(pdf_id):
 
 
 @app.route('/pdfs/<pdf_id>/readRecite')
+@requires_login
 def read_recite(pdf_id):
     """
     Page for reading PDF, taking notes, and choosing chapters for notes.
@@ -89,6 +127,7 @@ def read_recite(pdf_id):
 
 
 @app.route('/pdfs/<pdf_id>/review')
+@requires_login
 def review(pdf_id):
     """
     Page for choosing chapters to review content with flashcards.
@@ -97,6 +136,7 @@ def review(pdf_id):
 
 
 @app.route('/pdfs', methods=['GET', 'POST'])
+@requires_login
 def pdf_set_operations():
     match request.method:
         case 'GET':
@@ -128,6 +168,7 @@ def pdf_set_operations():
 
 
 @app.route('/pdfs/<pdf_id>', methods=['GET', 'PATCH', 'DELETE'])
+@requires_login
 def pdf_object_operations(pdf_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
 
@@ -164,6 +205,7 @@ def pdf_object_operations(pdf_id: str):
 
 
 @app.route('/pdfs/<pdf_id>/notes', methods=['GET'])
+@requires_login
 def get_note_hierarchy(pdf_id: str):
     """Gets the note hierarchy for a PDF."""
     pdf_obj = get_object_by_id(PDF, pdf_id)
@@ -171,6 +213,7 @@ def get_note_hierarchy(pdf_id: str):
 
 
 @app.route('/pdfs/<pdf_id>/chapters', methods=['GET', 'POST'])
+@requires_login
 def chapter_set_operations(pdf_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
 
@@ -193,6 +236,7 @@ def chapter_set_operations(pdf_id: str):
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>', methods=['GET', 'PATCH', 'DELETE'])
+@requires_login
 def chapter_object_operations(pdf_id: str, chapter_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     this_chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
@@ -218,6 +262,7 @@ def chapter_object_operations(pdf_id: str, chapter_id: str):
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections', methods=['GET', 'POST'])
+@requires_login
 def section_set_operations(pdf_id: str, chapter_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
@@ -241,6 +286,7 @@ def section_set_operations(pdf_id: str, chapter_id: str):
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>', methods=['GET', 'PATCH', 'DELETE'])
+@requires_login
 def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
@@ -267,6 +313,7 @@ def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes', methods=['GET', 'POST'])
+@requires_login
 def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
@@ -291,8 +338,10 @@ def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
 
 
 # TODO: abstract out code that's similar to qa_object_operations
+
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes/<note_id>', methods=['GET', 'PATCH',
                                                                                                   'DELETE'])
+@requires_login
 def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
@@ -328,6 +377,7 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
 # TODO: abstract out code that's similar to note_object_operations
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes/<note_id>', methods=['GET', 'PATCH',
                                                                                                   'DELETE'])
+@requires_login
 def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
@@ -363,6 +413,7 @@ def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id:
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET', 'POST'])
+@requires_login
 def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
