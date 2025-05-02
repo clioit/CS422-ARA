@@ -34,10 +34,10 @@ button:hover {
   transform: translateY(+1px);
 }
 
-ul{
-    text-decoration: none;
-    list-style-type: none;
-    text-align: center;
+ul {
+  text-decoration: none;
+  list-style-type: none;
+  text-align: center;
 }
 .red {
   color: red;
@@ -50,9 +50,7 @@ ul{
   width: 100%;
 }
 
-
 /**PAGE TOPPER*/
-
 
 .page-top {
   display: flex;
@@ -70,12 +68,10 @@ ul{
   border: none;
 }
 .home-button:hover {
-    background-color: rgb(55, 0, 128);
+  background-color: rgb(55, 0, 128);
 }
 
-
 /** MAIN SECTIONS [pdf | note | questions] */
-
 
 .columns {
   background-color: rgba(255, 0, 0, 0.1);
@@ -88,7 +84,7 @@ ul{
 /* PDF */
 .pdf-container {
   width: 70%;
-  min-height:min-content;
+  min-height: min-content;
   border-right: 1px solid #ccc;
   box-sizing: border-box;
 }
@@ -116,19 +112,16 @@ ul{
   margin-top: 20px;
 }
 
-
-
 /*SECTION TAGS*/
 #chapter {
   min-width: fit-content;
   max-width: 70%;
   margin-right: 4px;
-
 }
 
-.section-container{
-    padding: 4px;
-    overflow-y: auto;
+.section-container {
+  padding: 4px;
+  overflow-y: auto;
 }
 
 #tags {
@@ -156,41 +149,62 @@ ul{
 
 .section-topper {
   display: flex;
+  flex-direction: column;
+  color: red;
 }
 
-.review:hover{
-background-color: rgb(212,212,9);
+.review:hover {
+  background-color: rgb(212, 212, 9);
 }
-
 
 /* Q & A */
-.question{
-    width: 85%;
+.question {
+  width: 85%;
+
 }
 
-.question-obj{
-    background-color: rgba(255, 0, 0, 0.3);
-    justify-content: space-between;
-    margin: 4px;
-    padding: 2px;
-    border-width: 2px;
-    font-size: 10pt;
+.question-obj {
+  background-color: rgba(255, 0, 0, 0.3);
+  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px;
+  padding: 2px;
+  border-width: 2px;
+  font-size: 10pt;
+  border-radius: 2px;
 }
 
-.answer-el{
-    background-color: rgba(255, 0, 0, 0.551);
-    border-radius: 2px;
-    margin: 2px;
-    max-width: fit-content;
-    text-align: center;
+.answer-el {
+  background-color: rgba(255, 0, 0, 0.3);
+  margin: 0 auto;
+  max-width: fit-content;
+  width: 95%;
+  text-align: center;
+  padding: 2px;
+  border-radius: 1px;
+  border: 2px solid red;
 }
 
-.answer-area{
-    padding: 2px;
-    max-width: 95%;
+.answer-area {
+  padding: 2px;
+  max-width: 95%;
 }
 
-.remove-btn{
-    text-align: right;
-    max-width: 100%;
+.remove-btn {
+  text-align: right;
+  max-width: 100%;
+}
+
+.add-area{
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+#chapters-btn{
+  max-width: fit-content;
+}
+
+#start-pg{
+  max-width: fit-content;
 }
