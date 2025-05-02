@@ -257,8 +257,7 @@ function postQuestion() {
   // handle result
   .then(result => {
     if (result.status === 201) {
-      qMessage.textContent = result.body.message;
-      setTimeout(() => window.location.reload(), 1500);
+      qMessage.textContent = "Question saved.";
     } else {
       qMessage.textContent = result.body.message || 'Enter question failed.';
     }
