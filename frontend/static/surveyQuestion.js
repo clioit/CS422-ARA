@@ -168,43 +168,43 @@ function fetchQAS(id){
     
 }
 
-function fetchNewQAS(Q){
- // tag_id = id;
- let newQAS = null;
-  console.log(tag_id);
-    // Fetches all existing PDFs from the database to populate PDFArray[]
-    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
-      method: 'POST'
-  })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(errorData => {
-          throw new Error(errorData.description || 'Unknown error');
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      data.forEach(qa => {
-        questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
-      });
-      //displayDocOptions();
-      console.log(questions)
-      updateQuestions();
+// function fetchNewQAS(){
+//  // tag_id = id;
+//  //let newQAS = null;
+//   console.log(tag_id);
+//     // Fetches all existing PDFs from the database to populate PDFArray[]
+//     return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
+//       method: 'POST'
+//   })
+//     .then(response => {
+//       if (!response.ok) {
+//         return response.json().then(errorData => {
+//           throw new Error(errorData.description || 'Unknown error');
+//         });
+//       }
+//       return response.json();
+//     })
+//     .then(data => {
+//       data.forEach(qa => {
+//         questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
+//       });
+//       // displayDocOptions();
+//       console.log(questions)
+//       updateQuestions();
     
-    })
-    .catch(error => {
-      console.error("Error: ", error.message);
-      return [];
-    });
+//     })
+//     .catch(error => {
+//       console.error("Error: ", error.message);
+//       return [];
+//     });
     
-}
+//}
 
 // store user input in questions array
 function addQuestion() {
   const questionIn = document.getElementById("question").value.trim();
   console.log(questionIn);
-  let newQ = fetchNewQAS(questionIn);
+  let newQ = {question: questionIn};
   questions.unshift(newQ);
   console.log(`top`);
   updateQuestions();
@@ -240,7 +240,7 @@ function updateQuestions() {
     questionObj.appendChild(questionText);
 
     let saveAnswer;
-    if (questions[i].answer == "") {
+    if (questions[i].answer == "undefined") {
       //there isn't an answer
       //     saveAnswer = document.createElement("button");
       //     saveAnswer.id = `answer${i}`;
@@ -258,7 +258,7 @@ function updateQuestions() {
       saveAnswer.textContent = `Save Answer`;
       saveAnswer.className = "save-ans";
       //questionObj.appendChild(saveMe);
-    } else {
+     } else {
       //there is an answer
       saveAnswer = document.createElement("div");
       saveAnswer.className = "answer-el";
@@ -455,7 +455,7 @@ titleArea.appendChild(titleInput);
   const startInput = document.createElement("input");
   startInput.id ="start-pg";
   startInput.setAttribute("type", "number"); 
-  titleInput.setAttribute("placeholder", "Starts on Page");
+  startInput.setAttribute("placeholder", "Starts on Page");
 
   
   sectionTop.appendChild(startLabel);
