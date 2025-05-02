@@ -47,6 +47,15 @@ def get_object_by_id(collection, obj_id: str, is_array=False):
         abort(400, f"Object ID {obj_id} is of an invalid format.")
 
 
+def get_user_pdf(pdf_id: str):
+    user = get_object_by_id(User, request.cookies["user"])
+    user_pdf_ids = [str(doc.id) for doc in user.documents]
+    if pdf_id in user_pdf_ids:
+        return get_object_by_id(PDF, pdf_id)
+    else:
+        abort(404, f"User PDF with ID {pdf_id} not found.")
+
+
 def instantiate_from_request_json(cls):
     """Instantiates a class from a JSON object in the request body."""
     try:
@@ -84,8 +93,9 @@ def login():
         case 'POST':
             """Processes login form and sets user cookie."""
             username = request.form['username']
+            user = User.objects(username=username).first()
             resp = make_response(redirect(url_for("home")))
-            resp.set_cookie("user", username, max_age=3600)
+            resp.set_cookie("user", str(user.id), max_age=3600)
             return resp
 
 
@@ -138,19 +148,20 @@ def review(pdf_id):
 @app.route('/pdfs', methods=['GET', 'POST'])
 @requires_login
 def pdf_set_operations():
+    user = get_object_by_id(User, request.cookies["user"])
+
     match request.method:
         case 'GET':
             """
             Queries the MongoDB database, retrieves a list of all stored PDFs,
             structures their key details (ID, name, and page count) into a clear JSON format.
             """
-            pdfs = PDF.objects()
             pdf_list = [
                 {
                     "_id": str(pdf.id),
                     "name": pdf.name,
                     "num_chapters": len(pdf.chapters),
-                } for pdf in pdfs
+                } for pdf in user.documents
             ]
             return pdf_list
 
@@ -158,19 +169,23 @@ def pdf_set_operations():
             """Receives and uploads a PDF to the MongoDB database."""
             file = request.files['pdf_file']
             if file.filename.endswith(".pdf"):
-                existing_pdf_check = PDF.objects(name=file.filename).first()
-                if existing_pdf_check:
-                    return {'message': f'Could not upload: "{file.filename}" already exists.'}, 409
+                # Check for existing PDFs of this name
+                for pdf in user.documents:
+                    if pdf.name == file.filename:
+                        return {'message': f'Could not upload: "{file.filename}" already exists.'}, 409
+
                 new_pdf = PDF(name=file.filename)
                 new_pdf.file.put(file)
                 new_pdf.save()
+                user.documents.append(new_pdf)
+                user.save()
                 return {'message': f'File "{file.filename}" successfully uploaded.'}, 201
 
 
 @app.route('/pdfs/<pdf_id>', methods=['GET', 'PATCH', 'DELETE'])
 @requires_login
 def pdf_object_operations(pdf_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
 
     match request.method:
         case 'GET':
@@ -208,14 +223,14 @@ def pdf_object_operations(pdf_id: str):
 @requires_login
 def get_note_hierarchy(pdf_id: str):
     """Gets the note hierarchy for a PDF."""
-    pdf_obj = get_object_by_id(PDF, pdf_id)
-    return pdf_obj.to_mongo().to_dict()["chapters"]
+    pdf = get_user_pdf(pdf_id)
+    return pdf.to_mongo().to_dict()["chapters"]
 
 
 @app.route('/pdfs/<pdf_id>/chapters', methods=['GET', 'POST'])
 @requires_login
 def chapter_set_operations(pdf_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
 
     match request.method:
         case 'GET':
@@ -238,7 +253,7 @@ def chapter_set_operations(pdf_id: str):
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>', methods=['GET', 'PATCH', 'DELETE'])
 @requires_login
 def chapter_object_operations(pdf_id: str, chapter_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
     this_chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
 
     match request.method:
@@ -264,7 +279,7 @@ def chapter_object_operations(pdf_id: str, chapter_id: str):
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections', methods=['GET', 'POST'])
 @requires_login
 def section_set_operations(pdf_id: str, chapter_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
 
     match request.method:
@@ -288,7 +303,7 @@ def section_set_operations(pdf_id: str, chapter_id: str):
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>', methods=['GET', 'PATCH', 'DELETE'])
 @requires_login
 def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
     this_section = get_object_by_id(chapter.sections, section_id, is_array=True)
 
@@ -315,7 +330,7 @@ def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes', methods=['GET', 'POST'])
 @requires_login
 def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
     section = get_object_by_id(chapter.sections, section_id, is_array=True)
 
@@ -343,7 +358,7 @@ def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
                                                                                                   'DELETE'])
 @requires_login
 def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
     section = get_object_by_id(chapter.sections, section_id, is_array=True)
 
@@ -379,7 +394,7 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
                                                                                                   'DELETE'])
 @requires_login
 def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
     section = get_object_by_id(chapter.sections, section_id, is_array=True)
 
@@ -415,7 +430,7 @@ def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id:
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET', 'POST'])
 @requires_login
 def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
-    pdf = get_object_by_id(PDF, pdf_id)
+    pdf = get_user_pdf(pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
     section = get_object_by_id(chapter.sections, section_id, is_array=True)
 
