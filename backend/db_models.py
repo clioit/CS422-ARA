@@ -1,3 +1,14 @@
+"""
+MongoDB object schemas for CS 422 Project 1: ARA.
+
+This file defines classes for accessing objects in our MongoDB
+instance. mongoengine provides methods for creating, validating,
+saving, and retrieving objects of each of these types.
+
+Author: Ryan Kovatch
+Last modified: 04/25/2025
+"""
+
 from mongoengine import *
 from bson.objectid import ObjectId
 

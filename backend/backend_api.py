@@ -1,3 +1,14 @@
+"""
+Web server for CS 422 Project 1: ARA
+
+This file implements a RESTful API for committing and retrieving PDF
+and note data from a MongoDB instance. It also renders and serves the
+HTML templates in frontend/templates.
+
+Authors: Ryan Kovatch, Song Zhang, Derek van Devender
+Last modified: 04/29/2025
+"""
+
 import mongoengine
 from db_models import *
 from db_seeder import seed_db
@@ -62,27 +73,19 @@ def home():
 
 
 @app.route('/pdfs/<pdf_id>/surveyQuestion')
-def surveyQuestion(pdf_id):
+def survey_question(pdf_id):
     """
     Page for reading PDF, taking questions/answers, and adding chapters/sections.
     """
-    try:
-        pdf = get_object_by_id(PDF, pdf_id)
-        return render_template('surveyQuestion.html', pdf_id=pdf_id)
-    except:
-        abort(404, "PDF not found.")
+    return render_template('surveyQuestion.html', pdf_id=pdf_id)
 
 
 @app.route('/pdfs/<pdf_id>/readRecite')
-def readRecite(pdf_id):
+def read_recite(pdf_id):
     """
     Page for reading PDF, taking notes, and choosing chapters for notes.
     """
-    try:
-        pdf = get_object_by_id(PDF, pdf_id)
-        return render_template('readRecite.html', pdf_id=pdf_id)
-    except:
-        abort(404, "PDF not found.")
+    return render_template('readRecite.html', pdf_id=pdf_id)
 
 
 @app.route('/pdfs/<pdf_id>/review')
@@ -90,11 +93,7 @@ def review(pdf_id):
     """
     Page for choosing chapters to review content with flashcards.
     """
-    try:
-        pdf = get_object_by_id(PDF, pdf_id)
-        return render_template('review.html', pdf_id=pdf_id)
-    except:
-        abort(404, "PDF not found.")
+    return render_template('review.html', pdf_id=pdf_id)
 
 
 @app.route('/pdfs', methods=['GET', 'POST'])
@@ -136,7 +135,7 @@ def pdf_object_operations(pdf_id: str):
         case 'GET':
             """
             Retrieves a PDF from the MongoDB database and returns its bytes.
-            Ex: http://localhost:5001/pdf/680be4af29187334e35baad3
+            Ex: http://localhost:5001/pdfs/680be4af29187334e35baad3
             """
             file_data = pdf.file.read()
             file_stream = io.BytesIO(file_data)
@@ -193,6 +192,31 @@ def chapter_set_operations(pdf_id: str):
             return new_chapter.to_json(), 201
 
 
+@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>', methods=['GET', 'PATCH', 'DELETE'])
+def chapter_object_operations(pdf_id: str, chapter_id: str):
+    pdf = get_object_by_id(PDF, pdf_id)
+    this_chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
+
+    match request.method:
+        case 'GET':
+            """Gets a single chapter of a PDF."""
+            return this_chapter.to_json(), 200
+
+        case 'PATCH':
+            """Renames a single chapter of a PDF."""
+            new_chapter = instantiate_from_request_json(Chapter)
+            if new_chapter.title != this_chapter.title:
+                this_chapter.title = new_chapter.title
+            pdf.save()
+            return this_chapter.to_json(), 200
+
+        case 'DELETE':
+            """Deletes a single chapter of a PDF, INCLUDING ALL OF ITS SECTIONS AND NOTES."""
+            this_chapter.delete()
+            pdf.save()
+            return {"success": True}, 200
+
+
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections', methods=['GET', 'POST'])
 def section_set_operations(pdf_id: str, chapter_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
@@ -214,6 +238,32 @@ def section_set_operations(pdf_id: str, chapter_id: str):
             chapter.sections.append(new_section)
             pdf.save()
             return new_section.to_json(), 201
+
+
+@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>', methods=['GET', 'PATCH', 'DELETE'])
+def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
+    pdf = get_object_by_id(PDF, pdf_id)
+    chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
+    this_section = get_object_by_id(chapter.sections, section_id, is_array=True)
+
+    match request.method:
+        case 'GET':
+            """Gets a single section of a chapter."""
+            return this_section.to_json(), 200
+
+        case 'PATCH':
+            """Renames a section of a chapter."""
+            new_section = instantiate_from_request_json(Section)
+            if new_section.title != this_section.title:
+                this_section.title = new_section.title
+            pdf.save()
+            return this_section.to_json(), 200
+
+        case 'DELETE':
+            """Deletes a section of a chapter, INCLUDING ALL OF ITS NOTES."""
+            this_section.delete()
+            pdf.save()
+            return {"success": True}, 200
 
 
 @app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes', methods=['GET', 'POST'])
@@ -240,7 +290,79 @@ def note_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             return new_note.to_json(), 201
 
 
-@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET'])
+# TODO: abstract out code that's similar to qa_object_operations
+@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes/<note_id>', methods=['GET', 'PATCH',
+                                                                                                  'DELETE'])
+def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
+    pdf = get_object_by_id(PDF, pdf_id)
+    chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
+    section = get_object_by_id(chapter.sections, section_id, is_array=True)
+
+    # TODO: replace this code with get_object_by_id
+    section_notes = section.notes.filter(_cls="Note", _id=note_id)
+    if len(section_notes) == 0:
+        abort(404, description="Note not found.")
+    else:
+        this_note = section_notes[0]
+
+    match request.method:
+        case 'GET':
+            """Retrieves a single note."""
+            return this_note.to_json(), 200
+
+        case 'PATCH':
+            """Edits the text of a single note."""
+            new_note = instantiate_from_request_json(Note)
+            if new_note.text != this_note.text:
+                this_note.text = new_note.text
+            pdf.save()
+            return this_note.to_json(), 200
+
+        case 'DELETE':
+            """Deletes a single note."""
+            this_note.delete()
+            pdf.save()
+            return {"success": True}, 200
+
+
+# TODO: abstract out code that's similar to note_object_operations
+@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/notes/<note_id>', methods=['GET', 'PATCH',
+                                                                                                  'DELETE'])
+def qa_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_id: str):
+    pdf = get_object_by_id(PDF, pdf_id)
+    chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
+    section = get_object_by_id(chapter.sections, section_id, is_array=True)
+
+    # TODO: replace this code with get_object_by_id
+    section_qas = section.notes.filter(_cls="QuestionAnswer", _id=note_id)
+    if len(section_qas) == 0:
+        abort(404, description="Note not found.")
+    else:
+        this_qa = section_qas[0]
+
+    match request.method:
+        case 'GET':
+            """Retrieves a single note."""
+            return this_qa.to_json(), 200
+
+        case 'PATCH':
+            """Edits the text of a single note."""
+            new_qa = instantiate_from_request_json(Note)
+            if new_qa.question != this_qa.question:
+                this_qa.question = new_qa.question
+            if new_qa.text != this_qa.text:
+                this_qa.text = new_qa.text
+            pdf.save()
+            return this_qa.to_json(), 200
+
+        case 'DELETE':
+            """Deletes a single note."""
+            this_qa.delete()
+            pdf.save()
+            return {"success": True}, 200
+
+
+@app.route('/pdfs/<pdf_id>/chapters/<chapter_id>/sections/<section_id>/qas', methods=['GET', 'POST'])
 def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
     pdf = get_object_by_id(PDF, pdf_id)
     chapter = get_object_by_id(pdf.chapters, chapter_id, is_array=True)
@@ -263,22 +385,6 @@ def qa_set_operations(pdf_id: str, chapter_id: str, section_id: str):
             section.notes.append(new_qa)
             pdf.save()
             return new_qa.to_json(), 201
-
-
-# TODO Switch over to new PDF upload API
-# Currently used on the "readRecite" webpage
-# Receives and uploads PDF to MongoDB database
-@app.route('/upload_pdf', methods=['POST'])
-def upload_pdf():
-    file = request.files['pdf_file']
-    if file.filename.endswith(".pdf"):
-        existing_pdf_check = PDF.objects(name=file.filename).first()
-        if existing_pdf_check:
-            return jsonify({'message': f'Could not upload: "{file.filename}" already exists.'}), 409
-        new_pdf = PDF(name=file.filename)
-        new_pdf.file.put(file)
-        new_pdf.save()
-        return jsonify({'message': f'File "{file.filename}" successfully uploaded.'}), 201
 
 
 if __name__ == '__main__':
