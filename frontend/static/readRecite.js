@@ -45,12 +45,13 @@ function fetchSection(chapterId) {
 
 // Fetches note for the current chapter and section
 function fetchNote() {
-  return fetch(`/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${section_id}/notes`, {
+  fetch(`/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${section_id}/notes`, {
     method: "GET",
   })
     .then((response) => response.json())
     .then((notes) => {
         note_id = notes[0]._id;
+        console.log(note_id);
         const savedNotes = document.getElementById("notes");
         if (savedNotes) {
           savedNotes.value = notes[0].text;
@@ -87,11 +88,18 @@ function saveNote(noteText) {
   });
 }
 
+// Skeleton code to delete note for the current chapter and section - Does not work at the moment
+function deleteNote() {
+  fetch(`/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${section_id}/notes/${note_id}`, {
+    method: "DELETE",
+  });
+  note_id = null;
+}
+
 // Loads the first chapter, section, and its note info
 // TODO: Update chapter_id and section_id, then run fetchNote()
 window.onload = function () {
   fetchChapter();
-  //fetchNote();
 };
 
 // Saves note when user types
@@ -102,21 +110,6 @@ if (savedNotes) {
     saveNote(notesContent);
   });
 }
-
-// Upload PDF to MongoDB, to be moved to homepage
-document.querySelector("form").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  // Sends data to backend using POST, backend sends back a result message, message
-  // parsed as json, upload-status element is updated to json's message field
-  const pdfData = new FormData(this);
-  fetch("/pdfs", { method: "POST", body: pdfData })
-    .then((response) => response.json())
-    .then(
-      (data) =>
-        (document.getElementById("upload-status").textContent = data.message)
-    );
-});
 
 /**NAVIGATION */
 
