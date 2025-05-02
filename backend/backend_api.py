@@ -89,9 +89,12 @@ def requires_login(route):
     @wraps(route)
     def login_check_wrapper(**kwargs):
         if "user" in request.cookies:
-            return route(**kwargs)
+            if User.objects(id=request.cookies["user"]).first() is not None:
+                return route(**kwargs)  # Client is logged in
+            else:
+                return redirect(url_for("logout"))  # Client has stored an invalid user ID, clear it
         else:
-            return redirect(url_for("login"))
+            return redirect(url_for("login"))  # Client is not logged in
 
     return login_check_wrapper
 
@@ -112,12 +115,14 @@ def login():
 
         case 'POST':
             """Processes login form and sets user cookie."""
-            username = request.form["username"]
-            user = User.objects(username=username).first()
-            if user is not None:
-                resp = make_response(redirect(url_for("home")))
-                resp.set_cookie("user", str(user.id), max_age=3600)
-                return resp
+            if "username" in request.form:
+                user = User.objects(username=request.form["username"]).first()
+                if user is not None:
+                    resp = make_response(redirect(url_for("home")))
+                    resp.set_cookie("user", str(user.id), max_age=3600)
+                    return resp
+                else:
+                    return redirect(url_for("login"))
             else:
                 return redirect(url_for("login"))
 
