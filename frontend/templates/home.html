@@ -15,6 +15,16 @@
         <button class="logout" onclick="logout()">logout</button>
       </div>
     </div>
+
+  
+    <!-- code for PDF upload below -->
+    <div id="upload-form">
+      <h2>Upload a PDF</h2>
+      <input type="file" id="pdfInput" accept="application/pdf">
+      <button onclick="uploadPDF()">Upload</button>
+      <p id="message"></p>
+      <div id="upload-status"></div>
+    </div>
       <div class="pdf_selection">
         <label for="doc-choice">Choose a Document to Open</label>
         <div class="pdf_selection__display" id="pdf-display"></div>
