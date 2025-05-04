@@ -18,15 +18,20 @@
   <div class="columns">
     <div class="section-container">
       <div class="section-topper" id="section-topper">
+      <label for="new-section">Chapter Select</label>
 
     
     <select id="chapter" onchange="setChap()">
-        <option id ="no-select" value="" selected>Please Load Chapters</option>
+        <option id ="no-select" value="" selected>Choose a Chapter</option>
         <div class="chaps">choose</div>
     </select>
     <span id = "page">  </span>
-    <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button>
-    
+    <!-- <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button> -->
+    <script>
+      window.onload = function () {
+      fillChapters();
+      };
+    </script>
   </div>
 <div class="sections">
 <ul id= "tags" class="tags"></ul>

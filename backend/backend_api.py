@@ -148,22 +148,40 @@ def home():
 @app.route('/pdfs/<pdf_id>/surveyQuestion')
 @requires_login
 def survey_question(pdf_id):
+    pdf = get_user_pdf(pdf_id)
+    chapter = pdf.chapters[0] if pdf.chapters else None
+    section = chapter.sections[0] if chapter and chapter.sections else None
+
+    chapter_id = str(chapter._id) if chapter else None
+    section_id = str(section._id) if section else None
     """Page for reading PDF, taking questions/answers, and adding chapters/sections."""
-    return render_template('surveyQuestion.html', pdf_id=pdf_id, get_username=get_username)
+    return render_template('surveyQuestion.html', pdf_id=pdf_id, chapter_id=chapter_id, section_id=section_id, get_username=get_username)
 
 
 @app.route('/pdfs/<pdf_id>/readRecite')
 @requires_login
 def read_recite(pdf_id):
+    pdf = get_user_pdf(pdf_id)
+    chapter = pdf.chapters[0] if pdf.chapters else None
+    section = chapter.sections[0] if chapter and chapter.sections else None
+
+    chapter_id = str(chapter._id) if chapter else None
+    section_id = str(section._id) if section else None
     """Page for reading PDF, taking notes, and choosing chapters for notes."""
-    return render_template('readRecite.html', pdf_id=pdf_id, get_username=get_username)
+    return render_template('readRecite.html', pdf_id=pdf_id, chapter_id=chapter_id, section_id=section_id, get_username=get_username)
 
 
 @app.route('/pdfs/<pdf_id>/review')
 @requires_login
 def review(pdf_id):
+    pdf = get_user_pdf(pdf_id)
+    chapter = pdf.chapters[0] if pdf.chapters else None
+    section = chapter.sections[0] if chapter and chapter.sections else None
+
+    chapter_id = str(chapter._id) if chapter else None
+    section_id = str(section._id) if section else None
     """Page for choosing chapters to review content with flashcards."""
-    return render_template('review.html', pdf_id=pdf_id, get_username=get_username)
+    return render_template('review.html', pdf_id=pdf_id, chapter_id=chapter_id, section_id=section_id, get_username=get_username)
 
 
 @app.route('/pdfs', methods=['GET', 'POST'])
