@@ -138,6 +138,10 @@ function next(){
   else cardIdx=0;
   flipped=false;
   viewQuestions();
+  const view = document.getElementById("reveal");
+
+  view.innerHTML = `REVEAL`;
+
 }
 
 function back(){

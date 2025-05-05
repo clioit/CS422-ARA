@@ -197,7 +197,7 @@ function updateQuestions() {
     questionObj.appendChild(questionText);
 
     let saveAnswer;
-    if (questions[i].answer == "undefined") {
+    // if (questions[i].answer /*== "undefined"*/) {
       //there isn't an answer
       //     saveAnswer = document.createElement("button");
       //     saveAnswer.id = `answer${i}`;
@@ -209,20 +209,22 @@ function updateQuestions() {
       answerArea.id = `answer-area${i}`;
       // const q2ba = children[i];
       questionObj.appendChild(answerArea);
-
-      saveAnswer = document.createElement("button");
-      saveAnswer.setAttribute("onclick", `updateAnswer(${i})`);
-      saveAnswer.textContent = `Save Answer`;
-      saveAnswer.className = "save-ans";
+      answerArea.value = `${questions[i].answer}`;
+      newAnswer = document.createElement("button");
+      newAnswer.setAttribute("onclick", `updateAnswer(${i})`);
+      newAnswer.textContent = `SAVE`;
+      newAnswer.className = "save-ans";
       //questionObj.appendChild(saveMe);
-     } else {
+    //  } else {
       //there is an answer
-      saveAnswer = document.createElement("div");
-      saveAnswer.className = "answer-el";
-      saveAnswer.innerHTML = `${questions[i].answer}`;
-    }
+      // saveAnswer = document.createElement("div");
+      // saveAnswer.className = "answer-el";
+      // saveAnswer.innerHTML = `=> ${questions[i].answer}`;
+    //}
 
-    questionObj.appendChild(saveAnswer);
+  
+    //questionObj.appendChild(newAnswer);
+    //questionObj.appendChild(saveAnswer);
     questionObj.appendChild(dQuestion);
 
     qList.appendChild(questionObj);
@@ -253,11 +255,14 @@ function makeAnswer(idx) {
 
 //saves answer as on screen object (OSO)
 function updateAnswer(idx) {
+
+  // THIS SHOULD BE REwritten as a way to save current text to BE
   //const preButton = document.getElementById(`answer${idx}`);
   //preButton.remove();
   const answer = document.getElementById(`answer-area${idx}`);
-  questions[idx][1] = `A: ${answer.value.trim()}`;
+  const me = questions[idx].anwer +`\n=> ${answer.value.trim()}`;
   //answer.remove();
+  questions[idx].answer = me;
   updateQuestions();
   //const answerBtn = document.getElementById("save-ans");
   //answerBtn.remove();
