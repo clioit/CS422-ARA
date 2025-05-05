@@ -423,7 +423,7 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
 
         case 'PATCH':
             """Edits the text of a single note."""
-            new_note = instantiate_from_request_json(Note)
+            new_note = instantiate_from_request_json(note_class)
             if new_note.text != this_note.text:
                 this_note.text = new_note.text
             if note_class == QuestionAnswer and new_note.question != this_note.question:
