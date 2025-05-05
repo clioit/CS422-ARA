@@ -57,6 +57,56 @@ function getData(){
     
 }
 
+function postChapter() {
+  console.log("entered postChapter");
+  // postchapter adds a new chapter from user into the database
+  // get chapter input
+  const chapter = document.getElementById('new-chapter').value;
+  const chapterMsg = document.getElementById('chapter-message');
+  const chapterPage = document.getElementById('chapter-page').value;
+  const chapPageMsg = document.getElementById('chap-page-message');
+  // check if a section was entered
+  if (!chapter) {
+    chapterMsg.textContent = 'Please enter a chapter name!';
+    return;
+  }
+  if (!chapterPage) {
+    chapPageMsg.textContent = 'On what page does the chapter start?';
+    return;
+  }
+  // POST request to endpoint
+  fetch(`/pdfs/${pdf_id}/chapters`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title: chapter,
+      start_page: chapterPage
+   })
+  })
+  // check response is json
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return { status: response.status, body: data };
+    } else {
+      const text = await response.text();
+      throw new Error(`Unexpected response: ${text}`);
+    }
+  })
+  // handle result
+  .then(result => {
+    if (result.status === 201) {
+      chapPageMsg.textContent = result.body.message;
+      window.location.reload();
+    } else {
+      chapPageMsg.textContent = result.body.message || 'Add section failed.';
+    }
+  })
+  .catch(error => {
+    chapPageMsg.textContent = 'An error occurred: ' + error.message;
+  });
+}
+
 function postSection() {
   console.log("entered postSection");
   // postSection adds a new section tag from user into the database
@@ -74,6 +124,11 @@ function postSection() {
     pageMsg.textContent = 'Please enter a page number for the start of the section.';
     return;
   }
+  if (!sectionPage) {
+    pageMsg.textContent = 'Please select a chapter.';
+    return;
+  }
+
   // POST request to endpoint
   fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections`, {
     method: 'POST',
@@ -97,7 +152,9 @@ function postSection() {
   .then(result => {
     if (result.status === 201) {
       pageMsg.textContent = result.body.message;
-      setTimeout(() => window.location.reload(), 1500);
+      sectionMsg.textContent = "";
+      setChap();
+      // setTimeout(() => window.location.reload(), 1500);
     } else {
       pageMsg.textContent = result.body.message || 'Add section failed.';
     }
@@ -119,6 +176,14 @@ function postQuestion() {
   // check if a question was entered
   if (!question) {
     qMessage.textContent = 'Please enter a question.';
+    return;
+  }
+  if (!chap_id) {
+    qMessage.textContent = 'Please select a chapter.';
+    return;
+  }
+  else if (!tag_id) {
+    qMessage.textContent = 'Please select a section.';
     return;
   }
 
@@ -147,6 +212,7 @@ function postQuestion() {
   .then(result => {
     if (result.status === 201) {
       qMessage.textContent = "Question saved.";
+      getData();
     } else {
       qMessage.textContent = result.body.message || 'Enter question failed.';
     }
@@ -189,10 +255,15 @@ function updateQuestions() {
     questionText.className = "q-text";
     questionText.innerHTML = `Q: ${questions[i].question}`;
 
+    const ansQuestion = document.createElement("button");
+    ansQuestion.className = "ans-btn";
+    ansQuestion.setAttribute("onclick", document.createElement("text"));
+    ansQuestion.textContent = `Add Answer`;
+
     const dQuestion = document.createElement("button");
     dQuestion.className = "remove-btn";
     dQuestion.setAttribute("onclick", `removeQuestion(${i})`);
-    dQuestion.textContent = `remove`;
+    dQuestion.textContent = `Remove`;
 
     questionObj.appendChild(questionText);
 

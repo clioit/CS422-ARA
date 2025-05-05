@@ -109,7 +109,7 @@ function updateSections() {
       tagTitle.appendChild(tagPage);
       // Create REVIEW SET button with onclick attribute
       const viewButton = document.createElement("button");
-      viewButton.textContent = "VIEW SET";
+      viewButton.textContent = "SELECT SECTION";
       viewButton.className = "view-button";
       viewButton.addEventListener('click', function() {
         console.log("change", sectTags[i].id);
@@ -118,6 +118,10 @@ function updateSections() {
       });
        // view BUtton attatches id to button, calls correct function for data load*/
 
+      const rmvButton = document.createElement("button");
+      rmvButton.textContent = "REMOVE SECTION";
+      //saveMe.setAttribute("onclick", `removeS()`);
+      rmvButton.className = "view-button";
       // const rmvButton = document.createElement("button");
       // rmvButton.textContent = "REMOVE SET";
       // //saveMe.setAttribute("onclick", `removeS()`);
