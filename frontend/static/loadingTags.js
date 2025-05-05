@@ -38,12 +38,13 @@ async function fetchChaps() {
 fetchChaps();
 
 function setChap(){
+    console.log("entering setChap()", chap_id);
     chap_id = menu.value;
     fetchTags();
   }
 
   async function fetchTags() {
-    console.log(chap_id);
+    console.log("entering fetchTags()", chap_id);
     clearSections();
       // Fetches all existing PDFs from the database to populate PDFArray[]
       return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections`, {
@@ -76,6 +77,7 @@ function setChap(){
   // loads chapters into select menu
 function fillChapters() {
     console.log("helo");
+
  for (let i = 0; i < chapArray.length; i++) {
     const chapHolder = document.createElement("div");
     chapHolder.className = "chap-obj";
@@ -90,13 +92,18 @@ function fillChapters() {
     menu.appendChild(chapHolder);
   }
 
+  // const noSelect = document.getElementById("no-select");
+  // noSelect.textContent = `Choose a Chapter`;
+}
+
+
 //   const chapBtn = document.getElementById("chapters-btn");
 //   chapBtn.innerHTML = `ADD NEW`;
 //   chapBtn.setAttribute("onclick", addChapter());
 
-  const noSelect = document.getElementById("no-select");
-  noSelect.textContent = `Choose a Chapter`;
-}
+//   const noSelect = document.getElementById("no-select");
+//   noSelect.textContent = `Choose a Chapter`;
+// }
 
 // displays sectTags as OSO (On Screen Object)
 function updateSections() {

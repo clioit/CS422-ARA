@@ -153,7 +153,6 @@ function getData(id){
       return response.json();
     })
     .then(data => {
-      sectTags.length = 0;
       data.forEach(qa => {
         questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
       });
@@ -166,6 +165,105 @@ function getData(id){
       return [];
     });
     
+}
+
+function postSection() {
+  console.log("entered postSection");
+  // postSection adds a new section tag from user into the database
+  // get section tag input
+  const section = document.getElementById('new-section').value;
+  const sectionMsg = document.getElementById('section-message');
+  const sectionPage = document.getElementById('section-page').value;
+  const pageMsg = document.getElementById('page-message');
+  // check if a section was entered
+  if (!section) {
+    sectionMsg.textContent = 'Please give your tag a name. Labels are a great way to organize your notes and can help you review later!';
+    return;
+  }
+  if (!sectionPage) {
+    pageMsg.textContent = 'Please enter a page number for the start of the section.';
+    return;
+  }
+  // POST request to endpoint
+  fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title: section,
+      start_page: sectionPage
+   })
+  })
+  // check response is json
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return { status: response.status, body: data };
+    } else {
+      const text = await response.text();
+      throw new Error(`Unexpected response: ${text}`);
+    }
+  })
+  // handle result
+  .then(result => {
+    if (result.status === 201) {
+      pageMsg.textContent = result.body.message;
+      setTimeout(() => window.location.reload(), 1500);
+    } else {
+      pageMsg.textContent = result.body.message || 'Add section failed.';
+    }
+  })
+  .catch(error => {
+    pageMsg.textContent = 'An error occurred: ' + error.message;
+  });
+}
+
+
+function postQuestion() {
+  console.log("entered postQuestion");
+  // postQuestion adds a new question from user into the database
+  // get question input
+  const question = document.getElementById('question').value;
+  const qMessage = document.getElementById('question-message')
+  const qList = document.getElementById('questions-list');
+
+  // check if a question was entered
+  if (!question) {
+    qMessage.textContent = 'Please enter a question.';
+    return;
+  }
+
+  // POST request to endpoint
+  fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`
+    , {
+    method: 'POST',
+    body: JSON.stringify({
+      start_page: 0,
+      text: "",
+      question: question
+   })
+  })
+  // check response is json
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return { status: response.status, body: data };
+    } else {
+      const text = await response.text();
+      throw new Error(`Unexpected response: ${text}`);
+    }
+  })
+  // handle result
+  .then(result => {
+    if (result.status === 201) {
+      qMessage.textContent = "Question saved.";
+    } else {
+      qMessage.textContent = result.body.message || 'Enter question failed.';
+    }
+  })
+  .catch(error => {
+    qMessage.textContent = 'An error occurred: ' + error.message;
+  });
 }
 
 // function fetchNewQAS(){

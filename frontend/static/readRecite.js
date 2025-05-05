@@ -13,8 +13,8 @@ and it will (hopefully) fetch the note correctly. When users type, it should aut
 to the correct note_id in the database.
 */
 
-let chapter_id = null;
-let section_id = null;
+// let chapter_id = null;
+// let section_id = null;
 let note_id = null;
 
 // // One time fetch of a chapter
@@ -71,10 +71,10 @@ function saveNote(noteText) {
   // If note exists, find note to edit. Otherwise, create note and return its ID
   if (note_id) {
     method = "PATCH";
-    url = `/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${section_id}/notes/${note_id}`;
+    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/notes/${note_id}`;
   } else {
     method = "POST";
-    url = `/pdfs/${pdf_id}/chapters/${chapter_id}/sections/${section_id}/notes`;
+    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/notes`;
   }
 
   fetch(url, { method: method, body: JSON.stringify(noteData), })
@@ -104,19 +104,19 @@ if (savedNotes) {
 }
 
 // Upload PDF to MongoDB, to be moved to homepage
-document.querySelector("form").addEventListener("submit", function (e) {
-  e.preventDefault();
+// document.querySelector("form").addEventListener("submit", function (e) {
+//   e.preventDefault();
 
-  // Sends data to backend using POST, backend sends back a result message, message
-  // parsed as json, upload-status element is updated to json's message field
-  const pdfData = new FormData(this);
-  fetch("/pdfs", { method: "POST", body: pdfData })
-    .then((response) => response.json())
-    .then(
-      (data) =>
-        (document.getElementById("upload-status").textContent = data.message)
-    );
-});
+//   // Sends data to backend using POST, backend sends back a result message, message
+//   // parsed as json, upload-status element is updated to json's message field
+//   const pdfData = new FormData(this);
+//   fetch("/pdfs", { method: "POST", body: pdfData })
+//     .then((response) => response.json())
+//     .then(
+//       (data) =>
+//         (document.getElementById("upload-status").textContent = data.message)
+//     );
+// });
 
 /**NAVIGATION */
 

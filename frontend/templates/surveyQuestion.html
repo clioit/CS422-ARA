@@ -18,21 +18,30 @@
   <div class="columns">
     <div class="section-container">
       <div class="section-topper" id="section-topper">
+      <label for="new-section">Chapter Select</label>
 
-    
     <select id="chapter" onchange="setChap()">
-        <option id ="no-select" value="" selected>Please Load Chapters</option>
+        <option id ="no-select" value="" selected>Choose a Chapter</option>
         <div class="chaps">choose</div>
     </select>
     <span id = "page">  </span>
-    <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button>
-    
+    <!-- <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button> -->
+    <script>
+      window.addEventListener('load', function (){
+      fillChapters();
+      });
+    </script>
+
   </div>
 <div class="sections">
 <ul id= "tags" class="tags"></ul>
 <label for="new-section">Section Name</label>
-<input type="text" id="new-section">
-<button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
+<input id="new-section" type="text"/>
+<p id="section-message"></p>
+<label for="section-page">Page Number</label>
+<input id="section-page" type="text"/>
+<p id="page-message"></p>
+<button class="add-section" id="add-section" onclick="postSection()">ADD SECTION</button>
 </div>
 </div>
 
@@ -55,7 +64,8 @@
     <p>Use this space to <span class="red">Ask & Answer Questions</span></p>
     <div class="questions">
         <input type="text" class="question" id="question">
-        <button onclick="addQuestion()">ADD</button>
+        <button onclick="postQuestion()">ADD</button>
+        <p id="question-message"></p>
         <ul class="questions-list" id="questions-list"></ul>
     </div>
     <!-- <textarea id="notes" placeholder="Type here..."></textarea> -->
