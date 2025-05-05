@@ -117,10 +117,12 @@ function getCurrTag(){
   if (questions[cardIdx].answer === ""){
     A.innerHTML = `${currTag}`;
     document.getElementById("reveal").classList.add('hidden');
-    document.getElementById("card").classList.add('upside-down');}
+    document.getElementById("card").classList.add('upside-down');
+    document.getElementById("view").className ="yellow";}
   else {
     document.getElementById("reveal").classList.remove('hidden');
     document.getElementById("card").classList.remove('upside-down');
+    document.getElementById("view").className = "red";
   if (flipped){ 
       A.innerHTML = `${questions[cardIdx].answer}`;
       

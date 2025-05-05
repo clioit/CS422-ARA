@@ -102,8 +102,11 @@ function updateSections() {
   
       let tagTitle = document.createElement("div");
       tagTitle.className = "tag-title";
-      tagTitle.innerHTML = `${sectTags[i].title}`;
+      tagTitle.innerHTML = `<p>${sectTags[i].title}<p>`;
   
+      let tagPage = document.createElement("h6");
+      tagPage.innerHTML = `begins on pg.${sectTags[i].startPage}`
+      tagTitle.appendChild(tagPage);
       // Create REVIEW SET button with onclick attribute
       const viewButton = document.createElement("button");
       viewButton.textContent = "VIEW SET";

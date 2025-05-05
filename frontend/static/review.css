@@ -10,7 +10,12 @@
 .green{
     color: rgb(0, 186, 0);
 }
-
+.yellow:hover {
+    background-color: rgb(212, 212, 9);
+  }
+  .red:hover{
+    background-color: rgb(255, 0, 0);
+  }
 .hidden{
     display: none;
 }
