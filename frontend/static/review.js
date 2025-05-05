@@ -70,11 +70,13 @@
 
 let questions = [];
 
-function getData(id){
+function getData(){
+  console.log("im here");
+  questions = [];
   //let tag_id = id;
   //console.log(tag_id);
     // Fetches all existing PDFs from the database to populate PDFArray[]
-    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${id}/qas`, {
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
       method: 'GET'
   })
     .then(response => {
@@ -92,6 +94,7 @@ function getData(id){
       //displayDocOptions();
       console.log(questions)
       //updateQuestions();
+      getDataContinued();
     })
     .catch(error => {
       console.error("Error: ", error.message);
@@ -100,6 +103,40 @@ function getData(id){
     
 }
 
+function getDataContinued(){
+  console.log("im now here");
+  //questions = [];
+  //let tag_id = id;
+  //console.log(tag_id);
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/notes`, {
+      method: 'GET'
+  })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      data.forEach(note => {
+        questions.push({answer: null, question: note.text, page: note.start_page });
+      });
+      //displayDocOptions();
+      console.log(questions)
+      //updateQuestions();
+      viewQuestions();
+    })
+    .catch(error => {
+      console.error("Error: ", error.message);
+      return [];
+    });
+    
+}
+
+//getData();
 
 /* NAVIGATION */
 
@@ -108,3 +145,39 @@ function goHome(){
     window.location.replace("http://localhost:5001/home");
   }
 
+
+  let cardIdx = 0;
+  let flipped = false;
+  
+
+ function viewQuestions(){
+ // await getData(); // wait for data before moving on
+
+  console.log('loaded', questions);
+  console.log(questions[0]);
+  console.log(questions[cardIdx].answer);
+  const Q = document.getElementById("question");
+  const A = document.getElementById("answer");
+
+  Q.textContent = "";
+  A.textContent = "";
+
+  Q.innerHTML = `${questions[cardIdx].question}`;
+  if (questions[cardIdx].answer === null){
+    A.innerHTML = `Current Sections`;}
+  else if (flipped){ 
+      A.innerHTML = `${questions[cardIdx].answer}`;
+}}
+
+function next(){
+  if (cardIdx< questions.length-1) cardIdx++;
+  else cardIdx=0;
+  flipped=false;
+  viewQuestions();
+}
+
+function flip(){
+  flipped =! flipped;
+  viewQuestions();
+}
+//viewQuestions();

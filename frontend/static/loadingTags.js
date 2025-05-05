@@ -60,7 +60,7 @@ function setChap(){
         return response.json();
       })
       .then(data => {
-        sectTags.length = 0;
+        sectTags = [];
         data.forEach(tag => {
           sectTags.push({title: tag.title, startPage: tag.start_page, notesCount: tag.notes_count, id: tag._id });
         });
@@ -122,8 +122,11 @@ function updateSections() {
       const viewButton = document.createElement("button");
       viewButton.textContent = "VIEW SET";
       viewButton.className = "view-button";
-      viewButton.setAttribute("onclick", getData(`${sectTags[i].id}`));
-        //view BUtton attatches id to button, calls correct function for data load*/
+      viewButton.addEventListener('click', function() {
+        console.log("change", sectTags[i].id);
+        tag_id = sectTags[i].id;
+      });
+       // view BUtton attatches id to button, calls correct function for data load*/
 
       const rmvButton = document.createElement("button");
       rmvButton.textContent = "REMOVE SET";
@@ -137,6 +140,13 @@ function updateSections() {
   
       tagList.appendChild(tag);
     }
+  }
+
+  function changeSection(id){
+    console.log("change", id);
+    tag_id = id;
+    //getData();
+    //viewQuestions();
   }
 
   function clearSections() {
