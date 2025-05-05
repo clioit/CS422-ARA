@@ -120,7 +120,7 @@ function updateSections() {
   
       // Create REVIEW SET button with onclick attribute
       const viewButton = document.createElement("button");
-      viewButton.textContent = "VIEW SET";
+      viewButton.textContent = "SELECT SECTION";
       viewButton.className = "view-button";
       viewButton.addEventListener('click', function() {
         console.log("change", sectTags[i].id);
@@ -130,7 +130,7 @@ function updateSections() {
        // view BUtton attatches id to button, calls correct function for data load*/
 
       const rmvButton = document.createElement("button");
-      rmvButton.textContent = "REMOVE SET";
+      rmvButton.textContent = "REMOVE SECTION";
       //saveMe.setAttribute("onclick", `removeS()`);
       rmvButton.className = "view-button";
   
