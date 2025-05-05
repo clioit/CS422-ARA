@@ -16,7 +16,7 @@ from bson.objectid import ObjectId
 class Note(EmbeddedDocument):
     """A note attached to a page of a PDF."""
     meta = {'allow_inheritance': True}
-    _id = StringField(required=True, default=str(ObjectId()))
+    _id = ObjectIdField(required=True, default=ObjectId, primary_key=True)
     start_page = IntField()
     text = StringField(required=True)
 
@@ -28,7 +28,7 @@ class QuestionAnswer(Note):
 
 class Section(EmbeddedDocument):
     """A section of a PDF. Used to logically separate notes."""
-    _id = StringField(required=True, default=str(ObjectId()))
+    _id = ObjectIdField(required=True, default=ObjectId, primary_key=True)
     title = StringField(required=True)
     start_page = IntField(required=True)
     notes = EmbeddedDocumentListField(Note)
@@ -40,7 +40,7 @@ class Chapter(EmbeddedDocument):
     Per the SRS, there needs to be a note hierarchy of at least
     three levels (chapters, sections, notes).
     """
-    _id = StringField(required=True, default=str(ObjectId()))
+    _id = ObjectIdField(required=True, default=ObjectId, primary_key=True)
     title = StringField(required=True)
     start_page = IntField(required=True)
     sections = EmbeddedDocumentListField(Section)
