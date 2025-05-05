@@ -42,19 +42,20 @@
           <button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
           </div> -->
           </div>
-        <div class="columns__cards">
-            <div class="columns__cards--buttons">
-              <button onclick="getData()">VIEW</button>
-              <div class="card-actions">
-              <button onclick="flip()">REVEAL</button>
-              <button onclick="next()">NEXT>></button>
-            </div>
-            </div>
-            <div class="columns__cards--content">
-              <h4 id="question"></h4>
-              <p id="answer"></p>
-            </div>
+
         </div>
+        <div class="columns__cards">
+          <div class="columns__cards--buttons">
+            <button onclick="toEdit()">VIEW</button>
+            <div class="card-actions">
+            <button onclick="next()">NEXT>></button>
+            <button id="reveal" onclick="flip()">REVEAL</button>
+          </div>
+          </div>
+          <div class="columns__cards--content" id="card">
+            <h4 id="question"></h4>
+            <p id="answer"></p>
+          </div>
         </div>
 </main>
 </div>

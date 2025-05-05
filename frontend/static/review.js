@@ -71,6 +71,7 @@
 let questions = [];
 
 function getData(){
+  getCurrTag();
   console.log("im here");
   questions = [];
   //let tag_id = id;
@@ -122,8 +123,41 @@ function getDataContinued(){
     })
     .then(data => {
       data.forEach(note => {
-        questions.push({answer: null, question: note.text, page: note.start_page });
+        questions.push({answer: "", question: note.text, page: note.start_page });
       });
+      //displayDocOptions();
+      console.log(questions)
+      //updateQuestions();
+      viewQuestions();
+    })
+    .catch(error => {
+      console.error("Error: ", error.message);
+      return [];
+    });
+    
+}
+
+let currTag;
+
+function getCurrTag(){
+  console.log("im now here");
+  //questions = [];
+  //let currentSect;
+  //console.log(tag_id);
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}`, {
+      method: 'GET'
+  })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+        currTag = data.title;
       //displayDocOptions();
       console.log(questions)
       //updateQuestions();
@@ -163,11 +197,17 @@ function goHome(){
   A.textContent = "";
 
   Q.innerHTML = `${questions[cardIdx].question}`;
-  if (questions[cardIdx].answer === null){
-    A.innerHTML = `Current Sections`;}
-  else if (flipped){ 
+  if (questions[cardIdx].answer === ""){
+    A.innerHTML = `${currTag}`;
+    document.getElementById("reveal").classList.add('hidden');
+    document.getElementById("card").classList.add('upside-down');}
+  else {
+    document.getElementById("reveal").classList.remove('hidden');
+    document.getElementById("card").classList.remove('upside-down');
+  if (flipped){ 
       A.innerHTML = `${questions[cardIdx].answer}`;
-}}
+      
+}}}
 
 function next(){
   if (cardIdx< questions.length-1) cardIdx++;
@@ -179,5 +219,17 @@ function next(){
 function flip(){
   flipped =! flipped;
   viewQuestions();
+
+  const view = document.getElementById("reveal");
+
+  if (flipped) view.innerHTML = `HIDE`;
+  else view.innerHTML = `REVEAL`;
 }
 //viewQuestions();
+
+function toEdit(){
+  if (questions[cardIdx].answer === ""){
+    window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/readRecite`);
+}
+else window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
+}

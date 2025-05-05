@@ -125,6 +125,7 @@ function updateSections() {
       viewButton.addEventListener('click', function() {
         console.log("change", sectTags[i].id);
         tag_id = sectTags[i].id;
+        getData();
       });
        // view BUtton attatches id to button, calls correct function for data load*/
 
