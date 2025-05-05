@@ -36,6 +36,8 @@ def get_object_by_id(collection, obj_id: str, is_array=False, **addl_filters):
                 abort(404, f"{repr(collection)} object with ID {obj_id} not found.")
             elif len(obj) == 1:
                 return obj[0]
+            else:
+                abort(500, f"Multiple objects with ID {obj_id} found.")
         else:
             obj = collection.objects(id=obj_id, **addl_filters).first()
             if obj is not None:
