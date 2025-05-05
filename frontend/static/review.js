@@ -1,81 +1,20 @@
-// /* SECTION TAGS SECTION */
+/* STATIC JavaScript specified for review Module (review.html)
+Includes functionality for gathering all notes + QAs for current Chapter & Section
+Displays these as notecards with "reveal\hide" functionality for QA
+Allows user to iterate through set
+*/
 
-// // stand in arrays, need functions to load from BE
-// // const sectArray = [[`hi`,`hello`, `bye`],[`hi`,`ski`, `bye`]];
-// // const chapArray = [[`one`, 0],[`two`, 1]];
 
-// // loads chapters into select menu
-// function fillChapters(){
-//     for(let i=0; i<chapArray.length;i++){
-//         const chapHolder = document.createElement("div");
-//         chapHolder.className = "chap-obj";
-        
-//         const chap = document.createElement("option");
-//         chap.textContent = `${chapArray[i][0]}`;
-//         chap.value = chapArray[i][1];
-        
-//         const menu = document.getElementById("chapter");
-//         chapHolder.appendChild(chap);
-//         menu.appendChild(chapHolder);
-//     }
-// }
+/* DATA FETCHING */
 
-// fillChapters();
 
-// // array for 
-// let sectTags = [];
-
-// // populates sectTags array with all sections from chosen chapter
-// function fillTags(){
-//     clearSections();
-//     const chap = document.getElementById("chapter").value;
-//     const mySections = sectArray[chap];
-
-//     for(let i = 0; i<mySections.length; i++){
-//     sectTags.push(`${mySections[i]}`);
-//     }
-//     updateSections();
-// }
-
-// // displays sectTags as OSO (On Screen Object)
-// function updateSections(){
-//     const tagList = document.getElementById("tags");
-//     tagList.innerHTML = '';
-//     for(let i=0; i<sectTags.length; i++){
-
-//         const tag = document.createElement('li');
-//         tag.className = "tag";
-
-//         let tagTitle = document.createElement('div');
-//         tagTitle.className = 'tag-title';
-//         tagTitle.innerHTML = `${sectTags[i]}`;
-
-//         // Create REVIEW SET button with onclick attribute
-//         const viewButton = document.createElement('button');
-//         viewButton.textContent = 'REVIEW SET';
-//         viewButton.className = 'view-button';
-//         // deleteButton.setAttribute('onclick', `deleteTask(${i})`);
-//         tag.appendChild(tagTitle);
-//         tag.appendChild(viewButton);
-
-//         tagList.appendChild(tag);
-
-// }
-// }
-
-// function clearSections(){
-//    sectTags = [];
-//    updateSections();
-// }
-
+// initialize empt questions array to load in notecard information
 let questions = [];
 
-function getData(){
-  getCurrTag();
-  console.log("im here");
+async function getData(){
+  // pushes each QA from current section into the questions array
+  await getCurrTag();
   questions = [];
-  //let tag_id = id;
-  //console.log(tag_id);
     // Fetches all existing PDFs from the database to populate PDFArray[]
     return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
       method: 'GET'
@@ -92,9 +31,7 @@ function getData(){
       data.forEach(qa => {
         questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
       });
-      //displayDocOptions();
       console.log(questions)
-      //updateQuestions();
       getDataContinued();
     })
     .catch(error => {
@@ -105,11 +42,7 @@ function getData(){
 }
 
 function getDataContinued(){
-  console.log("im now here");
-  //questions = [];
-  //let tag_id = id;
-  //console.log(tag_id);
-    // Fetches all existing PDFs from the database to populate PDFArray[]
+    // Fetches all existing notes from the current section and pushes to questions Array
     return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/notes`, {
       method: 'GET'
   })
@@ -125,9 +58,7 @@ function getDataContinued(){
       data.forEach(note => {
         questions.push({answer: "", question: note.text, page: note.start_page });
       });
-      //displayDocOptions();
       console.log(questions)
-      //updateQuestions();
       viewQuestions();
     })
     .catch(error => {
@@ -137,13 +68,11 @@ function getDataContinued(){
     
 }
 
+// variable for storing current section title
 let currTag;
 
 function getCurrTag(){
-  console.log("im now here");
-  //questions = [];
-  //let currentSect;
-  //console.log(tag_id);
+//loads currTag
     // Fetches all existing PDFs from the database to populate PDFArray[]
     return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}`, {
       method: 'GET'
@@ -161,7 +90,7 @@ function getCurrTag(){
       //displayDocOptions();
       console.log(questions)
       //updateQuestions();
-      viewQuestions();
+     // viewQuestions();
     })
     .catch(error => {
       console.error("Error: ", error.message);
@@ -170,14 +99,10 @@ function getCurrTag(){
     
 }
 
-//getData();
-
-/* NAVIGATION */
 
 
-function goHome(){
-    window.location.replace("http://localhost:5001/home");
-  }
+
+/* NOTECARD FUNCTIONS */
 
 
   let cardIdx = 0;
@@ -185,11 +110,7 @@ function goHome(){
   
 
  function viewQuestions(){
- // await getData(); // wait for data before moving on
-
-  console.log('loaded', questions);
-  console.log(questions[0]);
-  console.log(questions[cardIdx].answer);
+  // displays content of notecard at cardIdx
   const Q = document.getElementById("question");
   const A = document.getElementById("answer");
 
@@ -200,23 +121,39 @@ function goHome(){
   if (questions[cardIdx].answer === ""){
     A.innerHTML = `${currTag}`;
     document.getElementById("reveal").classList.add('hidden');
-    document.getElementById("card").classList.add('upside-down');}
+    document.getElementById("card").classList.add('upside-down');
+    document.getElementById("view").className ="yellow";}
   else {
     document.getElementById("reveal").classList.remove('hidden');
     document.getElementById("card").classList.remove('upside-down');
+    document.getElementById("view").className = "red";
   if (flipped){ 
       A.innerHTML = `${questions[cardIdx].answer}`;
       
 }}}
 
 function next(){
+  //iterates through note set - BTN[NEXT>>]
   if (cardIdx< questions.length-1) cardIdx++;
   else cardIdx=0;
+  flipped=false;
+  viewQuestions();
+  const view = document.getElementById("reveal");
+
+  view.innerHTML = `REVEAL`;
+
+}
+
+function back(){
+  //iterates through note set - BTN[NEXT>>]
+  if (cardIdx> 0) cardIdx--;
+  else cardIdx=questions.length-1;
   flipped=false;
   viewQuestions();
 }
 
 function flip(){
+  // functionality for BTN - [REVEAL | SHOW] 
   flipped =! flipped;
   viewQuestions();
 
@@ -225,8 +162,16 @@ function flip(){
   if (flipped) view.innerHTML = `HIDE`;
   else view.innerHTML = `REVEAL`;
 }
-//viewQuestions();
 
+
+
+
+/* NAVIGATION */
+
+
+function goHome(){
+  window.location.replace("http://localhost:5001/home");
+}
 function toEdit(){
   if (questions[cardIdx].answer === ""){
     window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/readRecite`);
