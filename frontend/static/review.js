@@ -68,10 +68,109 @@
 //    updateSections();
 // }
 
-function getData(id){
-    console.log("ok");
+let questions = [];
+
+function getData(){
+  getCurrTag();
+  console.log("im here");
+  questions = [];
+  //let tag_id = id;
+  //console.log(tag_id);
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
+      method: 'GET'
+  })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      data.forEach(qa => {
+        questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
+      });
+      //displayDocOptions();
+      console.log(questions)
+      //updateQuestions();
+      getDataContinued();
+    })
+    .catch(error => {
+      console.error("Error: ", error.message);
+      return [];
+    });
+    
 }
 
+function getDataContinued(){
+  console.log("im now here");
+  //questions = [];
+  //let tag_id = id;
+  //console.log(tag_id);
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/notes`, {
+      method: 'GET'
+  })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      data.forEach(note => {
+        questions.push({answer: "", question: note.text, page: note.start_page });
+      });
+      //displayDocOptions();
+      console.log(questions)
+      //updateQuestions();
+      viewQuestions();
+    })
+    .catch(error => {
+      console.error("Error: ", error.message);
+      return [];
+    });
+    
+}
+
+let currTag;
+
+function getCurrTag(){
+  console.log("im now here");
+  //questions = [];
+  //let currentSect;
+  //console.log(tag_id);
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}`, {
+      method: 'GET'
+  })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+        currTag = data.title;
+      //displayDocOptions();
+      console.log(questions)
+      //updateQuestions();
+      viewQuestions();
+    })
+    .catch(error => {
+      console.error("Error: ", error.message);
+      return [];
+    });
+    
+}
+
+//getData();
 
 /* NAVIGATION */
 
@@ -79,3 +178,58 @@ function getData(id){
 function goHome(){
     window.location.replace("http://localhost:5001/home");
   }
+
+
+  let cardIdx = 0;
+  let flipped = false;
+  
+
+ function viewQuestions(){
+ // await getData(); // wait for data before moving on
+
+  console.log('loaded', questions);
+  console.log(questions[0]);
+  console.log(questions[cardIdx].answer);
+  const Q = document.getElementById("question");
+  const A = document.getElementById("answer");
+
+  Q.textContent = "";
+  A.textContent = "";
+
+  Q.innerHTML = `${questions[cardIdx].question}`;
+  if (questions[cardIdx].answer === ""){
+    A.innerHTML = `${currTag}`;
+    document.getElementById("reveal").classList.add('hidden');
+    document.getElementById("card").classList.add('upside-down');}
+  else {
+    document.getElementById("reveal").classList.remove('hidden');
+    document.getElementById("card").classList.remove('upside-down');
+  if (flipped){ 
+      A.innerHTML = `${questions[cardIdx].answer}`;
+      
+}}}
+
+function next(){
+  if (cardIdx< questions.length-1) cardIdx++;
+  else cardIdx=0;
+  flipped=false;
+  viewQuestions();
+}
+
+function flip(){
+  flipped =! flipped;
+  viewQuestions();
+
+  const view = document.getElementById("reveal");
+
+  if (flipped) view.innerHTML = `HIDE`;
+  else view.innerHTML = `REVEAL`;
+}
+//viewQuestions();
+
+function toEdit(){
+  if (questions[cardIdx].answer === ""){
+    window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/readRecite`);
+}
+else window.location.replace(`http://localhost:5001/pdfs/${pdf_id}/surveyQuestion`);
+}

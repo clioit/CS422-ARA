@@ -10,6 +10,10 @@
 .green{
     color: rgb(0, 186, 0);
 }
+
+.hidden{
+    display: none;
+}
 .container{
     margin: 16px;
     padding: 20px 20px;
@@ -54,12 +58,14 @@ button:hover{
 .columns{
 background-color: rgba(0, 186, 0, .1);
 margin-top: 8px;
+display: flex;
+flex-direction: row;
 }
 
-.columns__sections{
+.section-container{
     background-color: rgba(0, 186, 0, .3);
-    max-width: 25%;
-    min-width: 20px;
+    min-width: 30%;
+    max-width: 30%;
     padding: 8px 8px;
 }
 
@@ -91,4 +97,27 @@ margin-top: 8px;
 
 .view-button:hover{
     background-color: rgba(0, 186, 0, 0.551);
+}
+
+.columns__cards{
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    padding: 24px 24px;
+    border: 1pt solid rgba(0, 186, 0, .1);
+    margin: 12px auto;
+    min-width: 60%;
+    max-width: 60%;
+    background-color: rgba(0, 186, 0, .1);
+}
+
+#answer{
+    min-width: 100%;
+    text-align: flex-end;
+    background-color: rgba(0, 186, 0, .2);
+}
+
+.upside-down{
+    display: flex;
+    flex-direction: column-reverse;
 }

@@ -29,27 +29,39 @@
               <span id = "page">  </span>
               <!-- <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button> -->
               <script>
-                window.addEventListener('load', function (){
-                fillChapters();
-                });
+                // window.addEventListener('load', function (){
+                // fetchChaps();
+                // fillChapters();
+                // });
               </script>
             </div>
           <div class="sections">
           <ul id= "tags" class="tags"></ul>
-          <label for="new-section">Section Name</label>
+          <!-- <label for="new-section">Section Name</label>
           <input type="text" id="new-section">
           <button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
+          </div> -->
           </div>
-          </div>
-        <div class="columns__cards">
-            <div class="columns__cards--buttons"></div>
-            <div class="columns__cards--content"></div>
+
         </div>
+        <div class="columns__cards">
+          <div class="columns__cards--buttons">
+            <button onclick="toEdit()">VIEW</button>
+            <div class="card-actions">
+            <button onclick="next()">NEXT>></button>
+            <button id="reveal" onclick="flip()">REVEAL</button>
+          </div>
+          </div>
+          <div class="columns__cards--content" id="card">
+            <h4 id="question"></h4>
+            <p id="answer"></p>
+          </div>
         </div>
 </main>
 </div>
 <script>
     const pdf_id = "{{ pdf_id }}";
+    // console.log(pdf_id);
   </script>
     <script>
       let tag_id = "{{ section_id }}";
