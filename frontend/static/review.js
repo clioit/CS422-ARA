@@ -68,8 +68,36 @@
 //    updateSections();
 // }
 
+let questions = [];
+
 function getData(id){
-    console.log("ok");
+  //let tag_id = id;
+  //console.log(tag_id);
+    // Fetches all existing PDFs from the database to populate PDFArray[]
+    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${id}/qas`, {
+      method: 'GET'
+  })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.description || 'Unknown error');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      data.forEach(qa => {
+        questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
+      });
+      //displayDocOptions();
+      console.log(questions)
+      //updateQuestions();
+    })
+    .catch(error => {
+      console.error("Error: ", error.message);
+      return [];
+    });
+    
 }
 
 
@@ -79,3 +107,4 @@ function getData(id){
 function goHome(){
     window.location.replace("http://localhost:5001/home");
   }
+

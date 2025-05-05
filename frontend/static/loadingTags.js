@@ -27,6 +27,7 @@ async function fetchChaps() {
         });
         //displayDocOptions();
         console.log(chapArray)
+        fillChapters();
       })
       .catch(error => {
         console.error("Error: ", error.message);
