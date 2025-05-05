@@ -7,9 +7,9 @@
 // initialize empt questions array to load in notecard information
 let questions = [];
 
-function getData(){
+async function getData(){
   // pushes each QA from current section into the questions array
-  getCurrTag();
+  await getCurrTag();
   questions = [];
     // Fetches all existing PDFs from the database to populate PDFArray[]
     return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
@@ -86,7 +86,7 @@ function getCurrTag(){
       //displayDocOptions();
       console.log(questions)
       //updateQuestions();
-      viewQuestions();
+     // viewQuestions();
     })
     .catch(error => {
       console.error("Error: ", error.message);

@@ -10,11 +10,17 @@
 .green{
     color: rgb(0, 186, 0);
 }
+
+#view{
+    cursor: not-allowed;
+}
 .yellow:hover {
     background-color: rgb(212, 212, 9);
+    cursor: pointer !important;
   }
   .red:hover{
     background-color: rgb(255, 0, 0);
+    cursor:pointer !important;
   }
 .hidden{
     display: none;
