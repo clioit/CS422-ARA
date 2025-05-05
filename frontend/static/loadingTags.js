@@ -118,15 +118,15 @@ function updateSections() {
       });
        // view BUtton attatches id to button, calls correct function for data load*/
 
-      const rmvButton = document.createElement("button");
-      rmvButton.textContent = "REMOVE SET";
-      //saveMe.setAttribute("onclick", `removeS()`);
-      rmvButton.className = "view-button";
+      // const rmvButton = document.createElement("button");
+      // rmvButton.textContent = "REMOVE SET";
+      // //saveMe.setAttribute("onclick", `removeS()`);
+      // rmvButton.className = "view-button";
   
       // viewButtonButton.setAttribute('onclick', `setSection(${i})`);
       tag.appendChild(tagTitle);
       tag.appendChild(viewButton);
-      tag.appendChild(rmvButton);
+     // tag.appendChild(rmvButton);
   
       tagList.appendChild(tag);
     }

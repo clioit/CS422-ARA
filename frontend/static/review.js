@@ -1,4 +1,8 @@
-/* scriptin specified for review module */
+/* STATIC JavaScript specified for review Module (review.html)
+Includes functionality for gathering all notes + QAs for current Chapter & Section
+Displays these as notecards with "reveal\hide" functionality for QA
+Allows user to iterate through set
+*/
 
 
 /* DATA FETCHING */
@@ -132,6 +136,14 @@ function next(){
   //iterates through note set - BTN[NEXT>>]
   if (cardIdx< questions.length-1) cardIdx++;
   else cardIdx=0;
+  flipped=false;
+  viewQuestions();
+}
+
+function back(){
+  //iterates through note set - BTN[NEXT>>]
+  if (cardIdx> 0) cardIdx--;
+  else cardIdx=questions.length-1;
   flipped=false;
   viewQuestions();
 }
