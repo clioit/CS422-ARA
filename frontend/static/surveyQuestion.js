@@ -45,7 +45,7 @@ function getData(){
     })
     .then(data => {
       data.forEach(qa => {
-        questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
+        questions.push({question: qa.question, answer: qa.text, page: qa.start_page, id: qa._id });
       });
       console.log(questions)
       updateQuestions();
@@ -253,20 +253,20 @@ function makeAnswer(idx) {
   q2ba.appendChild(saveMe);
 }
 
-//saves answer as on screen object (OSO)
-function updateAnswer(idx) {
+// //saves answer as on screen object (OSO)
+// function updateAnswer(idx) {
 
-  // THIS SHOULD BE REwritten as a way to save current text to BE
-  //const preButton = document.getElementById(`answer${idx}`);
-  //preButton.remove();
-  const answer = document.getElementById(`answer-area${idx}`);
-  const me = questions[idx].anwer +`\n=> ${answer.value.trim()}`;
-  //answer.remove();
-  questions[idx].answer = me;
-  updateQuestions();
-  //const answerBtn = document.getElementById("save-ans");
-  //answerBtn.remove();
-}
+//   // THIS SHOULD BE REwritten as a way to save current text to BE
+//   //const preButton = document.getElementById(`answer${idx}`);
+//   //preButton.remove();
+//   const answer = document.getElementById(`answer-area${idx}`);
+//   const me = questions[idx].anwer +`\n=> ${answer.value.trim()}`;
+//   //answer.remove();
+//   questions[idx].answer = me;
+//   updateQuestions();
+//   //const answerBtn = document.getElementById("save-ans");
+//   //answerBtn.remove();
+// }
 
 /**SECTION TAGS */
 
@@ -328,6 +328,54 @@ titleArea.appendChild(addBtn);
   sectionTopper.appendChild(sectionTop);
 
 }
+
+
+
+let note_id = null;
+
+// Saves note data with default start page of 1
+function saveNote(noteText) {
+  const QData = {
+    text: noteText,
+   // start_page: 1,
+  };
+
+  let method;
+  let url;
+  
+  // If note exists, find note to edit. Otherwise, create note and return its ID
+  if (note_id) {
+    method = "PATCH";
+    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas/${note_id}`;
+  } else {
+    method = "POST";
+    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`;
+  }
+
+  fetch(url, { method: method, body: JSON.stringify(noteData), })
+    .then((response) => response.json())
+    .then(
+      (data) => {
+      if (method === "POST") {
+        note_id = data._id;
+      }
+  });
+}
+
+
+let saveQ = [];
+
+// Saves note when user types
+for (let i = 0;i<questions.length; i++){
+ saveQ[i] = document.getElementById(`answer-area${i}`);
+ note_id = saveQ[i].id;
+if (saveQ[i]) {
+  saveQ[i].addEventListener("input", function () {
+    const notesContent = saveQ[i].value;
+    saveNote(notesContent);
+  });
+}}
+
 
 // function removeS(){
 
