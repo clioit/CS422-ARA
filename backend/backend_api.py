@@ -310,8 +310,10 @@ def chapter_object_operations(pdf_id: str, chapter_id: str):
 
         case 'DELETE':
             """Deletes a single chapter of a PDF, INCLUDING ALL OF ITS SECTIONS AND NOTES."""
-            this_chapter.delete()
-            pdf.save()
+            PDF.objects(id=pdf_id).update_one(
+                pull__chapters___id=this_chapter._id,  # TODO: don't access protected attr
+                upsert=False
+            )
             return {"success": True}
 
 
@@ -361,8 +363,13 @@ def section_object_operations(pdf_id: str, chapter_id: str, section_id: str):
 
         case 'DELETE':
             """Deletes a section of a chapter, INCLUDING ALL OF ITS NOTES."""
-            this_section.delete()
-            pdf.save()
+            PDF.objects(id=pdf_id).update_one(
+                __raw__={"$pull": {"chapters.$[i].sections": {
+                    "_id": this_section._id  # TODO: don't access protected attr
+                }}},
+                array_filters=[{"i._id": chapter_id}],
+                upsert=False
+            )
             return {"success": True}
 
 
@@ -442,8 +449,14 @@ def note_object_operations(pdf_id: str, chapter_id: str, section_id: str, note_i
 
         case 'DELETE':
             """Deletes a single note."""
-            this_note.delete()
-            pdf.save()
+            PDF.objects(id=pdf_id).update_one(
+                __raw__={"$pull": {"chapters.$[i].sections.$[j].notes": {
+                    "_id": this_note._id,  # TODO: don't access protected attr
+                    "_cls": note_class.__name__,
+                }}},
+                array_filters=[{"i._id": chapter_id}, {"j._id": section_id}],
+                upsert=False
+            )
             return {"success": True}
 
 
