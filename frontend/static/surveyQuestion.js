@@ -279,6 +279,14 @@ function updateQuestions() {
       const answerArea = document.createElement("textarea");
       answerArea.className = "answer-area";
       answerArea.id = `answer-area${i}`;
+
+      answerArea.addEventListener("input", function () {
+        let notesContent = answerArea.value;
+        let quest = questions[i].question;
+        saveNote(notesContent,quest);
+      });
+
+      
       // const q2ba = children[i];
       questionObj.appendChild(answerArea);
       answerArea.value = `${questions[i].answer}`;
@@ -301,7 +309,7 @@ function updateQuestions() {
 
     qList.appendChild(questionObj);
   }
-  newQuestions();
+  //newQuestions();
 }
 
 function removeQuestion(idx) {
@@ -407,11 +415,13 @@ titleArea.appendChild(addBtn);
 
 
 // Saves note data with default start page of 1
-function saveNote(noteText) {
+function saveNote(noteText, quest) {
 
   console.log('hi');
   const QData = {
     text: noteText,
+    question: quest
+
    // start_page: 1,
   };
 
@@ -439,19 +449,21 @@ function saveNote(noteText) {
 }
 
 
-let saveQ = [];
+// let saveQ = [];
 
-function newQuestions(){
-// Saves note when user types
-if(questions.length>0){
-for (let i = 0;i<questions.length; i++){
- saveQ[i] = document.getElementById(`answer-area${i}`);
- note_id = questions[i].id;
-saveQ[i].addEventListener("input", function () {
-    let notesContent = saveQ[i].value;
-    saveNote(notesContent);
-  });
-}}}
+// function newQuestions(){
+// // Saves note when user types
+// //if(questions.length>0){
+// for (let i = 0;i<questions.length; i++){
+//  saveQ[i] = document.getElementById(`answer-area${i}`);
+//  note_id = questions[i].id;
+// saveQ[i].addEventListener("input", function () {
+//     let notesContent = saveQ[i].value;
+//     let quest = questions[i].question;
+//     saveNote(notesContent,quest);
+//   });
+// }}
+//}
 
 
 // function removeS(){
