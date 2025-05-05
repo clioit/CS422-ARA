@@ -17,15 +17,27 @@
 <main>
   <div class="columns">
     <div class="section-container">
-      <div class="section-topper">
-    <label for="chapter">Choose a Chapter</label>
-    <select id="chapter" onchange="fillTags()">
-      <option value="" selected></option>
-        <div class="chaps"></div>
+      <div class="section-topper" id="section-topper">
+      <label for="new-section">Chapter Select</label>
+
+    
+    <select id="chapter" onchange="setChap()">
+        <option id ="no-select" value="" selected>Choose a Chapter</option>
+        <div class="chaps">choose</div>
     </select>
+    <span id = "page">  </span>
+    <!-- <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button> -->
+    <script>
+      window.addEventListener('load', function (){
+      fillChapters();
+      });
+    </script>
   </div>
 <div class="sections">
 <ul id= "tags" class="tags"></ul>
+<label for="new-section">Section Name</label>
+<input type="text" id="new-section">
+<button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
 </div>
 </div>
 
@@ -45,9 +57,18 @@
   <script>
     const pdf_id = "{{ pdf_id }}";
   </script>
-  <script src="{{url_for('static', filename='review.js')}}">
+    <script>
+      let tag_id = "{{ section_id }}";
+    </script>
+        <script>
+          let chap_id = "{{ chapter_id }}";
+        </script>
+  <!-- <script src="{{url_for('static', filename='review.js')}}">
+  </script> -->
+  <script src="{{url_for('static', filename='loadingTags.js')}}">
   </script>
   <script src="{{url_for('static', filename='readRecite.js')}}">
   </script>
+
 </body>
 </html>
