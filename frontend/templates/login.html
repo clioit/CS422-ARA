@@ -8,21 +8,29 @@
 </head>
 <body>
     <div class="container">
-    <h1 class="page-title">ARA: <span class="purple">Login</span></h1>
+    <h1 class="page-title">
+        ARA:
+        <span class="purple">Login</span>
+    </h1>
 <main>
     <div class="login-area">
     <h2 class="login-area__head">Please enter your Username.</h2>
     <div class="login-area__input-row">
-    <label for="username">USER:</label>
-    <input type="text" id="username">
-    <button class="btn" onclick="login()">LOGIN</button></div>
+        <form action="/login" method="post">
+            <label for="username">USER:</label>
+            <select name="username" id="username">
+                <option value="bob">Bob</option>
+                <option value="alice">Alice</option>
+                <option value="eva">Eva</option>
+            </select>
+            <button class="btn" type="submit">LOGIN</button>
+        </form>
+    </div>
 </div>
 <div class="description">
-    <p>This is our ARA program ....</p>
+    <p>This is our ARA program...</p>
 </div>
 </main>
 </div>
-<script src="{{url_for('static', filename='login.js')}}"></script>
-<link href="{{url_for('static', filename='login.css')}}" rel="stylesheet">
 </body>
 </html>

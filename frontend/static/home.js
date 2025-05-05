@@ -1,12 +1,6 @@
 const PDFArray = [];
 let pdf_id = null;
 
-function logout(){
-    console.log("logout clicked!");
-    window.location.replace("http://localhost:5001/");
-}
-
-
 function uploadPDF() {
   // uploadPDF uploads the pdf from user into the database
   // get uploaded pdf and any messages
@@ -25,7 +19,7 @@ function uploadPDF() {
   formData.append('pdf_file', file);
 
   // POST request to endpoint
-  fetch('/upload_pdf', {
+  fetch('/pdfs', {
     method: 'POST',
     body: formData
   })
