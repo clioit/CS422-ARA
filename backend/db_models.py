@@ -13,11 +13,16 @@ from mongoengine import *
 from bson.objectid import ObjectId
 
 
+def new_obj_id() -> str:
+    obj_id = ObjectId()
+    return str(obj_id)
+
+
 class Note(EmbeddedDocument):
     """A note attached to a page of a PDF."""
     meta = {'allow_inheritance': True}
-    _id = StringField(required=True, default=str(ObjectId()))
-    start_page = IntField(required=True)
+    _id = StringField(required=True, default=new_obj_id, primary_key=True)
+    start_page = IntField()
     text = StringField(required=True)
 
 
@@ -28,7 +33,7 @@ class QuestionAnswer(Note):
 
 class Section(EmbeddedDocument):
     """A section of a PDF. Used to logically separate notes."""
-    _id = StringField(required=True, default=str(ObjectId()))
+    _id = StringField(required=True, default=new_obj_id, primary_key=True)
     title = StringField(required=True)
     start_page = IntField(required=True)
     notes = EmbeddedDocumentListField(Note)
@@ -40,7 +45,7 @@ class Chapter(EmbeddedDocument):
     Per the SRS, there needs to be a note hierarchy of at least
     three levels (chapters, sections, notes).
     """
-    _id = StringField(required=True, default=str(ObjectId()))
+    _id = StringField(required=True, default=new_obj_id, primary_key=True)
     title = StringField(required=True)
     start_page = IntField(required=True)
     sections = EmbeddedDocumentListField(Section)

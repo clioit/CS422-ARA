@@ -11,29 +11,67 @@
         <div class="page-top">
         <h1 class="page-top__page-title">ARA: <span class="green">Review</span></h1>
         <div class="page-top__user-corner">
-          <h3 id="user">username</h3>
+          <h3 id="user">{{ get_username() }}</h3>
           <button class="home-button" onclick="goHome()">HOME</button>
         </div>
         </div>
     <main>
         <div class="columns">
-            <div class="columns__sections">
-                <label for="chapter">Choose a Chapter</label>
-                <select id="chapter" onchange="fillTags()" type="array">
-                    <option value="" selected></option>
-                    <div class="chaps"></div>
-                </select>
-        <div class="sections">
-            <ul id= "tags" class="tags"></ul>
-        </div>
+            <div class="section-container">
+                <div class="section-topper" id="section-topper">
+                <label for="new-section">Chapter Select</label>
+
+              
+              <select id="chapter" onchange="setChap()">
+                  <option id ="no-select" value="" selected>Choose a Chapter</option>
+                  <div class="chaps">choose</div>
+              </select>
+              <span id = "page">  </span>
+              <!-- <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button> -->
+              <script>
+                // window.addEventListener('load', function (){
+                // fetchChaps();
+                // fillChapters();
+                // });
+              </script>
+            </div>
+          <div class="sections">
+          <ul id= "tags" class="tags"></ul>
+          <!-- <label for="new-section">Section Name</label>
+          <input type="text" id="new-section">
+          <button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
+          </div> -->
+          </div>
+
         </div>
         <div class="columns__cards">
-            <div class="columns__cards--buttons"></div>
-            <div class="columns__cards--content"></div>
-        </div>
+          <div class="columns__cards--buttons">
+            <button onclick="toEdit()" id="view" class="nav-view">EDIT NOTECARD</button>
+            <div class="card-actions">
+              <button onclick="next()">NEXT⟶</button>
+              <button id="reveal" onclick="flip()">REVEAL</button>
+              <button onclick="back()">⟵BACK</button>
+          </div>
+          </div>
+          <div class="columns__cards--content" id="card">
+            <h4 id="question"></h4>
+            <p id="answer">Please Choose a Set to Review</p>
+          </div>
         </div>
 </main>
 </div>
+<script>
+    const pdf_id = "{{ pdf_id }}";
+    // console.log(pdf_id);
+  </script>
+    <script>
+      let tag_id = "{{ section_id }}";
+    </script>
+        <script>
+          let chap_id = "{{ chapter_id }}";
+        </script>
+<script src="{{url_for('static', filename='loadingTags.js')}}">
+  </script>
 <script src="{{url_for('static', filename='review.js')}}"></script>
 </body>
 </html>

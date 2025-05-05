@@ -119,9 +119,24 @@ ul {
   margin-right: 4px;
 }
 
+.sections{
+  border: 1px solid rgba(255, 0, 0, 0.051);
+  padding: 4px;
+  background-color: rgba(255, 0, 0, 0.151);
+  margin-top: 4px;
+  text-align: center;
+  justify-content: center;
+  font-size: small;
+}
+
 .section-container {
   padding: 4px;
   overflow-y: auto;
+}
+
+#add-section{
+  text-align: right;
+  margin-top: 4px;
 }
 
 #tags {

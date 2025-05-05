@@ -10,7 +10,7 @@
     <div class="page-top">
     <h1 class="page-top__page-title">ARA: <span class="red">Survey & Question</span></h1>
     <div class="page-top__user-corner">
-      <h3 id="user">username</h3>
+      <h3 id="user">{{ get_username() }}</h3>
       <button class="home-button" onclick="goHome()">HOME</button>
     </div>
     </div>
@@ -18,21 +18,40 @@
   <div class="columns">
     <div class="section-container">
       <div class="section-topper" id="section-topper">
+      <label for="new-section">Chapter Select</label>
 
-    
     <select id="chapter" onchange="setChap()">
-        <option id ="no-select" value="" selected>Please Load Chapters</option>
+        <option id ="no-select" value="" selected>Choose a Chapter</option>
         <div class="chaps">choose</div>
     </select>
     <span id = "page">  </span>
-    <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button>
-    
+    <!-- <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button> -->
+    <script>
+      // window.addEventListener('load', function (){
+      // fillChapters();
+      // });
+    </script>
+    <div class="chapters">
+      <ul id= "chapters" class="chapter"></ul>
+      <label for="new-chapter">Chapter Name</label>
+      <input id="new-chapter" type="text"/>
+      <p id="chapter-message"></p>
+      <label for="chapter-page">Page Number</label>
+      <input id="chapter-page" type="text"/>
+      <p id="chap-page-message"></p>
+      <button class="add-chapter" id="add-chapter" onclick="postChapter()">ADD CHAPTER</button>
+    </div>
+
   </div>
 <div class="sections">
 <ul id= "tags" class="tags"></ul>
 <label for="new-section">Section Name</label>
-<input type="text" id="new-section">
-<button class="add-section" id="add-section" onclick="addSection()">ADD SECTION</button>
+<input id="new-section" type="text"/>
+<p id="section-message"></p>
+<label for="section-page">Page Number</label>
+<input id="section-page" type="text"/>
+<p id="page-message"></p>
+<button class="add-section" id="add-section" onclick="postSection()">ADD SECTION</button>
 </div>
 </div>
 
@@ -55,7 +74,8 @@
     <p>Use this space to <span class="red">Ask & Answer Questions</span></p>
     <div class="questions">
         <input type="text" class="question" id="question">
-        <button onclick="addQuestion()">ADD</button>
+        <button onclick="postQuestion()">ADD</button>
+        <p id="question-message"></p>
         <ul class="questions-list" id="questions-list"></ul>
     </div>
     <!-- <textarea id="notes" placeholder="Type here..."></textarea> -->
@@ -66,12 +86,18 @@
 </div>
   <script>
     const pdf_id = "{{ pdf_id }}";
-  </script>
+    let chap_id = "{{ chapter_id }}";
+    let tag_id = "{{ section_id }}";
+    </script>
+
   <!-- <script src="{{url_for('static', filename='review.js')}}">
   </script> -->
   <!-- <script src="{{url_for('static', filename='readRecite.js')}}">
   </script> -->
+  <script src="{{url_for('static', filename='loadingTags.js')}}">
+  </script>
     <script src="{{url_for('static', filename='surveyQuestion.js')}}">
   </script>
+
 </body>
 </html>

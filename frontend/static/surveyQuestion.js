@@ -1,112 +1,4 @@
-
-let chapArray = [];
-// let menu = document.getElementById("chapter");
-let chap_id = null;
-// array for
-let sectTags = [];
-const menu = document.getElementById("chapter");
-
-let tag_id = null;
-
-async function fetchChaps() {
-    // Fetches all existing PDFs from the database to populate PDFArray[]
-    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters`, {
-        method: 'GET'
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(errorData => {
-            throw new Error(errorData.description || 'Unknown error');
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        chapArray.length = 0;
-        data.forEach(chap => {
-          chapArray.push({id: chap._id, title: chap.title, startPage: chap.start_page, /*notesCount: tag.notes_count */});
-        });
-        //displayDocOptions();
-        console.log(chapArray)
-      })
-      .catch(error => {
-        console.error("Error: ", error.message);
-        return [];
-      });
-
-  }
-
-fetchChaps();
-//fillChapters();
-
-
-function setChap(){
-  chap_id = menu.value;
-  fetchTags();
-}
-
-
-async function fetchTags() {
-  console.log(chap_id);
-  clearSections();
-    // Fetches all existing PDFs from the database to populate PDFArray[]
-    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections`, {
-      method: 'GET'
-  })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(errorData => {
-          throw new Error(errorData.description || 'Unknown error');
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      sectTags.length = 0;
-      data.forEach(tag => {
-        sectTags.push({title: tag.title, startPage: tag.start_page, notesCount: tag.notes_count });
-      });
-      //displayDocOptions();
-      console.log(sectTags)
-      updateSections();
-    })
-    .catch(error => {
-      console.error("Error: ", error.message);
-      return [];
-    });
-    
-}
-
-async function fetchTags() {
-  console.log(chap_id);
-  clearSections();
-    // Fetches all existing PDFs from the database to populate PDFArray[]
-    return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections`, {
-      method: 'GET'
-  })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(errorData => {
-          throw new Error(errorData.description || 'Unknown error');
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      sectTags.length = 0;
-      data.forEach(tag => {
-        sectTags.push({id: tag._id, title: tag.title, startPage: tag.start_page, notesCount: tag.notes_count });
-      });
-      //displayDocOptions();
-      console.log(sectTags)
-      updateSections();
-    })
-    .catch(error => {
-      console.error("Error: ", error.message);
-      return [];
-    });
-    
-}
+/** LOGIC AND FUNCTIONALITY SPECIFIC TO SURVEY & QUESTION MODULE */
 
 
 
@@ -137,9 +29,8 @@ function goRead() {
 
 let questions = [];
 
-function fetchQAS(id){
-  tag_id = id;
-  console.log(tag_id);
+function getData(){
+  questions =[];
     // Fetches all existing PDFs from the database to populate PDFArray[]
     return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
       method: 'GET'
@@ -153,11 +44,9 @@ function fetchQAS(id){
       return response.json();
     })
     .then(data => {
-      sectTags.length = 0;
       data.forEach(qa => {
-        questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
+        questions.push({question: qa.question, answer: qa.text, page: qa.start_page, id: qa._id });
       });
-      //displayDocOptions();
       console.log(questions)
       updateQuestions();
     })
@@ -168,37 +57,171 @@ function fetchQAS(id){
     
 }
 
-// function fetchNewQAS(){
-//  // tag_id = id;
-//  //let newQAS = null;
-//   console.log(tag_id);
-//     // Fetches all existing PDFs from the database to populate PDFArray[]
-//     return fetch(`http://localhost:5001/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`, {
-//       method: 'POST'
-//   })
-//     .then(response => {
-//       if (!response.ok) {
-//         return response.json().then(errorData => {
-//           throw new Error(errorData.description || 'Unknown error');
-//         });
-//       }
-//       return response.json();
-//     })
-//     .then(data => {
-//       data.forEach(qa => {
-//         questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
-//       });
-//       // displayDocOptions();
-//       console.log(questions)
-//       updateQuestions();
-    
-//     })
-//     .catch(error => {
-//       console.error("Error: ", error.message);
-//       return [];
-//     });
-    
-//}
+function postChapter() {
+  console.log("entered postChapter");
+  // postchapter adds a new chapter from user into the database
+  // get chapter input
+  const chapter = document.getElementById('new-chapter').value;
+  const chapterMsg = document.getElementById('chapter-message');
+  const chapterPage = document.getElementById('chapter-page').value;
+  const chapPageMsg = document.getElementById('chap-page-message');
+  // check if a section was entered
+  if (!chapter) {
+    chapterMsg.textContent = 'Please enter a chapter name!';
+    return;
+  }
+  if (!chapterPage) {
+    chapPageMsg.textContent = 'On what page does the chapter start?';
+    return;
+  }
+  // POST request to endpoint
+  fetch(`/pdfs/${pdf_id}/chapters`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title: chapter,
+      start_page: chapterPage
+   })
+  })
+  // check response is json
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return { status: response.status, body: data };
+    } else {
+      const text = await response.text();
+      throw new Error(`Unexpected response: ${text}`);
+    }
+  })
+  // handle result
+  .then(result => {
+    if (result.status === 201) {
+      chapPageMsg.textContent = result.body.message;
+      window.location.reload();
+    } else {
+      chapPageMsg.textContent = result.body.message || 'Add section failed.';
+    }
+  })
+  .catch(error => {
+    chapPageMsg.textContent = 'An error occurred: ' + error.message;
+  });
+}
+
+function postSection() {
+  console.log("entered postSection");
+  // postSection adds a new section tag from user into the database
+  // get section tag input
+  const section = document.getElementById('new-section').value;
+  const sectionMsg = document.getElementById('section-message');
+  const sectionPage = document.getElementById('section-page').value;
+  const pageMsg = document.getElementById('page-message');
+  // check if a section was entered
+  if (!section) {
+    sectionMsg.textContent = 'Please give your tag a name. Labels are a great way to organize your notes and can help you review later!';
+    return;
+  }
+  if (!sectionPage) {
+    pageMsg.textContent = 'Please enter a page number for the start of the section.';
+    return;
+  }
+  if (!sectionPage) {
+    pageMsg.textContent = 'Please select a chapter.';
+    return;
+  }
+
+  // POST request to endpoint
+  fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title: section,
+      start_page: sectionPage
+   })
+  })
+  // check response is json
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return { status: response.status, body: data };
+    } else {
+      const text = await response.text();
+      throw new Error(`Unexpected response: ${text}`);
+    }
+  })
+  // handle result
+  .then(result => {
+    if (result.status === 201) {
+      pageMsg.textContent = result.body.message;
+      sectionMsg.textContent = "";
+      setChap();
+      // setTimeout(() => window.location.reload(), 1500);
+    } else {
+      pageMsg.textContent = result.body.message || 'Add section failed.';
+    }
+  })
+  .catch(error => {
+    pageMsg.textContent = 'An error occurred: ' + error.message;
+  });
+}
+
+
+function postQuestion() {
+  console.log("entered postQuestion");
+  // postQuestion adds a new question from user into the database
+  // get question input
+  const question = document.getElementById('question').value;
+  const qMessage = document.getElementById('question-message')
+  const qList = document.getElementById('questions-list');
+
+  // check if a question was entered
+  if (!question) {
+    qMessage.textContent = 'Please enter a question.';
+    return;
+  }
+  if (!chap_id) {
+    qMessage.textContent = 'Please select a chapter.';
+    return;
+  }
+  else if (!tag_id) {
+    qMessage.textContent = 'Please select a section.';
+    return;
+  }
+
+  // POST request to endpoint
+  fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`
+    , {
+    method: 'POST',
+    body: JSON.stringify({
+      start_page: 0,
+      text: "",
+      question: question
+   })
+  })
+  // check response is json
+  .then(async response => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return { status: response.status, body: data };
+    } else {
+      const text = await response.text();
+      throw new Error(`Unexpected response: ${text}`);
+    }
+  })
+  // handle result
+  .then(result => {
+    if (result.status === 201) {
+      qMessage.textContent = "Question saved.";
+      getData();
+    } else {
+      qMessage.textContent = result.body.message || 'Enter question failed.';
+    }
+  })
+  .catch(error => {
+    qMessage.textContent = 'An error occurred: ' + error.message;
+  });
+}
+
 
 // store user input in questions array
 function addQuestion() {
@@ -232,15 +255,20 @@ function updateQuestions() {
     questionText.className = "q-text";
     questionText.innerHTML = `Q: ${questions[i].question}`;
 
+    const ansQuestion = document.createElement("button");
+    ansQuestion.className = "ans-btn";
+    ansQuestion.setAttribute("onclick", document.createElement("text"));
+    ansQuestion.textContent = `Add Answer`;
+
     const dQuestion = document.createElement("button");
     dQuestion.className = "remove-btn";
     dQuestion.setAttribute("onclick", `removeQuestion(${i})`);
-    dQuestion.textContent = `remove`;
+    dQuestion.textContent = `Remove`;
 
     questionObj.appendChild(questionText);
 
     let saveAnswer;
-    if (questions[i].answer == "undefined") {
+    // if (questions[i].answer /*== "undefined"*/) {
       //there isn't an answer
       //     saveAnswer = document.createElement("button");
       //     saveAnswer.id = `answer${i}`;
@@ -252,20 +280,22 @@ function updateQuestions() {
       answerArea.id = `answer-area${i}`;
       // const q2ba = children[i];
       questionObj.appendChild(answerArea);
-
-      saveAnswer = document.createElement("button");
-      saveAnswer.setAttribute("onclick", `updateAnswer(${i})`);
-      saveAnswer.textContent = `Save Answer`;
-      saveAnswer.className = "save-ans";
+      answerArea.value = `${questions[i].answer}`;
+      newAnswer = document.createElement("button");
+      newAnswer.setAttribute("onclick", `updateAnswer(${i})`);
+      newAnswer.textContent = `SAVE`;
+      newAnswer.className = "save-ans";
       //questionObj.appendChild(saveMe);
-     } else {
+    //  } else {
       //there is an answer
-      saveAnswer = document.createElement("div");
-      saveAnswer.className = "answer-el";
-      saveAnswer.innerHTML = `${questions[i].answer}`;
-    }
+      // saveAnswer = document.createElement("div");
+      // saveAnswer.className = "answer-el";
+      // saveAnswer.innerHTML = `=> ${questions[i].answer}`;
+    //}
 
-    questionObj.appendChild(saveAnswer);
+  
+    //questionObj.appendChild(newAnswer);
+    //questionObj.appendChild(saveAnswer);
     questionObj.appendChild(dQuestion);
 
     qList.appendChild(questionObj);
@@ -294,121 +324,23 @@ function makeAnswer(idx) {
   q2ba.appendChild(saveMe);
 }
 
-//saves answer as on screen object (OSO)
-function updateAnswer(idx) {
-  //const preButton = document.getElementById(`answer${idx}`);
-  //preButton.remove();
-  const answer = document.getElementById(`answer-area${idx}`);
-  questions[idx][1] = `A: ${answer.value.trim()}`;
-  //answer.remove();
-  updateQuestions();
-  //const answerBtn = document.getElementById("save-ans");
-  //answerBtn.remove();
-}
+// //saves answer as on screen object (OSO)
+// function updateAnswer(idx) {
+
+//   // THIS SHOULD BE REwritten as a way to save current text to BE
+//   //const preButton = document.getElementById(`answer${idx}`);
+//   //preButton.remove();
+//   const answer = document.getElementById(`answer-area${idx}`);
+//   const me = questions[idx].anwer +`\n=> ${answer.value.trim()}`;
+//   //answer.remove();
+//   questions[idx].answer = me;
+//   updateQuestions();
+//   //const answerBtn = document.getElementById("save-ans");
+//   //answerBtn.remove();
+// }
 
 /**SECTION TAGS */
 
-// stand in arrays, need functions to load from BE
-
-
-
-
-
-
-// loads chapters into select menu
-function fillChapters() {
-    console.log("helo");
- for (let i = 0; i < chapArray.length; i++) {
-    const chapHolder = document.createElement("div");
-    chapHolder.className = "chap-obj";
-
-    const chapter = document.createElement("option");
-    chapter.innerHTML = `${chapArray[i].title}`;
-    chapter.value = chapArray[i].id;
-    console.log(chapArray[i]);
-
-    
-    chapHolder.appendChild(chapter);
-    menu.appendChild(chapHolder);
-  }
-
-  const chapBtn = document.getElementById("chapters-btn");
-  chapBtn.innerHTML = `ADD NEW`;
-  chapBtn.setAttribute("onclick", addChapter());
-
-  const noSelect = document.getElementById("no-select");
-  noSelect.textContent = `Choose a Chapter`;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // populates sectTags array with all sections from chosen chapter
-// function fillTags() {
-//   clearSections();
-//   const chap = document.getElementById("chapter").value;
-//   const mySections = sectArray[chap];
-
-//   for (let i = 0; i < mySections.length; i++) {
-//     sectTags.push(`${mySections[i].title}`);
-//   }
-//   updateSections();}
-
-
-// displays sectTags as OSO (On Screen Object)
-function updateSections() {
-  const tagList = document.getElementById("tags");
-  tagList.innerHTML = "";
-  for (let i = 0; i < sectTags.length; i++) {
-    const tag = document.createElement("li");
-    tag.className = "tag";
-
-    let tagTitle = document.createElement("div");
-    tagTitle.className = "tag-title";
-    tagTitle.innerHTML = `${sectTags[i].title}`;
-
-    // Create REVIEW SET button with onclick attribute
-    const viewButton = document.createElement("button");
-    viewButton.textContent = "VIEW SET";
-    viewButton.className = "view-button";
-    viewButton.setAttribute("onclick", fetchQAS(sectTags[i].id))
-
-    const rmvButton = document.createElement("button");
-    rmvButton.textContent = "REMOVE SET";
-    //saveMe.setAttribute("onclick", `removeS()`);
-    rmvButton.className = "view-button";
-
-    // viewButtonButton.setAttribute('onclick', `setSection(${i})`);
-    tag.appendChild(tagTitle);
-    tag.appendChild(viewButton);
-    tag.appendChild(rmvButton);
-
-    tagList.appendChild(tag);
-  }
-}
-
-
-
-function clearSections() {
-  sectTags = [];
-  updateSections();
-}
-
-function clearS() {
-  const quest = document.getElementById("new-section");
-  quest.textContent = "";
-}
 
 function addSection() {
   const sectionName = document.getElementById("new-section").value.trim();
@@ -467,6 +399,54 @@ titleArea.appendChild(addBtn);
   sectionTopper.appendChild(sectionTop);
 
 }
+
+
+
+let note_id = null;
+
+// Saves note data with default start page of 1
+function saveNote(noteText) {
+  const QData = {
+    text: noteText,
+   // start_page: 1,
+  };
+
+  let method;
+  let url;
+  
+  // If note exists, find note to edit. Otherwise, create note and return its ID
+  if (note_id) {
+    method = "PATCH";
+    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas/${note_id}`;
+  } else {
+    method = "POST";
+    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`;
+  }
+
+  fetch(url, { method: method, body: JSON.stringify(noteData), })
+    .then((response) => response.json())
+    .then(
+      (data) => {
+      if (method === "POST") {
+        note_id = data._id;
+      }
+  });
+}
+
+
+let saveQ = [];
+
+// Saves note when user types
+for (let i = 0;i<questions.length; i++){
+ saveQ[i] = document.getElementById(`answer-area${i}`);
+ note_id = saveQ[i].id;
+if (saveQ[i]) {
+  saveQ[i].addEventListener("input", function () {
+    const notesContent = saveQ[i].value;
+    saveNote(notesContent);
+  });
+}}
+
 
 // function removeS(){
 
