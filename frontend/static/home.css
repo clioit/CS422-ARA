@@ -65,9 +65,10 @@ button:hover{
 
 .pdf-button{
     border: none;
-    padding: 1px 8px;
+    padding: 1px 8px 1px 8px;
     margin: 4px;
     background-color:  rgba(55, 0, 128, .3);
+    overflow-x:hidden;
 }
 
 .next{
