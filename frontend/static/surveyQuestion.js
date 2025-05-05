@@ -19,7 +19,7 @@ function goRead() {
 
 
 
-
+let note_id = null;
 
 
 
@@ -47,6 +47,7 @@ function getData(){
       data.forEach(qa => {
         questions.push({question: qa.question, answer: qa.text, page: qa.start_page, id: qa._id });
       });
+      note_id = questions[0].id;
       console.log(questions)
       updateQuestions();
     })
@@ -243,7 +244,7 @@ function clearQ() {
 function updateQuestions() {
   console.log(`here`);
   console.log(questions);
-
+  //newQuestions();
   const qList = document.getElementById("questions-list");
   qList.innerHTML = "";
 
@@ -300,6 +301,7 @@ function updateQuestions() {
 
     qList.appendChild(questionObj);
   }
+  newQuestions();
 }
 
 function removeQuestion(idx) {
@@ -402,10 +404,12 @@ titleArea.appendChild(addBtn);
 
 
 
-let note_id = null;
+
 
 // Saves note data with default start page of 1
 function saveNote(noteText) {
+
+  console.log('hi');
   const QData = {
     text: noteText,
    // start_page: 1,
@@ -423,29 +427,31 @@ function saveNote(noteText) {
     url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`;
   }
 
-  fetch(url, { method: method, body: JSON.stringify(noteData), })
+  fetch(url, { method: method, body: JSON.stringify(QData), })
     .then((response) => response.json())
     .then(
       (data) => {
       if (method === "POST") {
         note_id = data._id;
       }
+      getData();
   });
 }
 
 
 let saveQ = [];
 
+function newQuestions(){
 // Saves note when user types
+if(questions.length>0){
 for (let i = 0;i<questions.length; i++){
  saveQ[i] = document.getElementById(`answer-area${i}`);
- note_id = saveQ[i].id;
-if (saveQ[i]) {
-  saveQ[i].addEventListener("input", function () {
-    const notesContent = saveQ[i].value;
+ note_id = questions[i].id;
+saveQ[i].addEventListener("input", function () {
+    let notesContent = saveQ[i].value;
     saveNote(notesContent);
   });
-}}
+}}}
 
 
 // function removeS(){

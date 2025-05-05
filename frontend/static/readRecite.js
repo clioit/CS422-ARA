@@ -84,6 +84,7 @@ function saveNote(noteText) {
       if (method === "POST") {
         note_id = data._id;
       }
+      getData();
   });
 }
 
