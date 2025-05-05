@@ -153,7 +153,6 @@ function getData(id){
       return response.json();
     })
     .then(data => {
-      sectTags.length = 0;
       data.forEach(qa => {
         questions.push({question: qa.question, answer: qa.text, page: qa.start_page });
       });
