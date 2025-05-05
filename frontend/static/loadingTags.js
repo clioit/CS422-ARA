@@ -135,7 +135,7 @@ function updateSections() {
       // viewButtonButton.setAttribute('onclick', `setSection(${i})`);
       tag.appendChild(tagTitle);
       tag.appendChild(viewButton);
-     // tag.appendChild(rmvButton);
+      tag.appendChild(rmvButton);
   
       tagList.appendChild(tag);
     }
