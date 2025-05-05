@@ -131,7 +131,12 @@ function updateSections() {
 
       const rmvButton = document.createElement("button");
       rmvButton.textContent = "REMOVE SECTION";
-      //saveMe.setAttribute("onclick", `removeS()`);
+      rmvButton.addEventListener('click', function() {
+        console.log("change", sectTags[i].id);
+        tag_id = sectTags[i].id;
+        removeSection(tag_id);
+        fetchTags();
+      });      
       rmvButton.className = "view-button";
   
       // viewButtonButton.setAttribute('onclick', `setSection(${i})`);
@@ -141,6 +146,15 @@ function updateSections() {
   
       tagList.appendChild(tag);
     }
+  }
+
+  function removeSection(rmvId) {
+    // DELETE request to endpoint
+    tag_id = rmvId;
+    fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}`
+    , {
+    method: 'DELETE'
+    })
   }
 
   function changeSection(id){
