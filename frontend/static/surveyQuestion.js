@@ -280,7 +280,7 @@ function updateQuestions() {
       answerArea.className = "answer-area";
       answerArea.id = `answer-area${i}`;
 
-      answerArea.addEventListener("input", function () {
+      answerArea.addEventListener("blur", function () {
         let notesContent = answerArea.value;
         let quest = questions[i].question;
         saveNote(notesContent,quest);
