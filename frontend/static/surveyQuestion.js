@@ -47,7 +47,7 @@ function getData(){
       data.forEach(qa => {
         questions.push({question: qa.question, answer: qa.text, page: qa.start_page, id: qa._id });
       });
-      note_id = questions[0].id;
+      //note_id = questions[0].id;
       console.log(questions)
       updateQuestions();
     })
