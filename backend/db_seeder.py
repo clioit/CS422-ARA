@@ -19,8 +19,8 @@ def seed_db():
     NOTE: Assumes MongoEngine is already connected to an instance.
     """
     example_chapters = [
-        Chapter(title="Chapter 1 - Introduction", start_page=0, sections=[
-            Section(title="Professional software development", start_page=1, notes=[
+        Chapter(title="Chapter 1 - Introduction", start_page=1, sections=[
+            Section(title="Professional software development", start_page=3, notes=[
                 Note(text="Software systems are becoming increasingly complex which comes with more issues, but this "
                           "can be solved by software engineering methods."),
                 Note(text="A program is a product, but professional software requires software engineering with "
@@ -47,7 +47,7 @@ def seed_db():
                 QuestionAnswer(question="What are the different software engineering techniques?",
                                text="This is my other answer.")
             ]),
-            Section(title="Software engineering ethics", start_page=0, notes=[
+            Section(title="Software engineering ethics", start_page=12, notes=[
                 Note(text="Ethical Issues:\n"
                           "\ta. Confidentiality (privacy of clients)\n"
                           "\tb. Competence (know what to accept)\n"
@@ -64,7 +64,7 @@ def seed_db():
                 QuestionAnswer(question="How might/can these ethical and professional issues affect me?",
                                text="This is my other answer.")
             ]),
-            Section(title="Case studies", start_page=0, notes=[
+            Section(title="Case studies", start_page=15, notes=[
                 Note(text="Different systems:\n"
                           "\ta. Embedded system (ex. insulin pump)\n"
                           "\tb. Information system (ex. medical records)\n"

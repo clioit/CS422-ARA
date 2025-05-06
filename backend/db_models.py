@@ -14,6 +14,7 @@ from bson.objectid import ObjectId
 
 
 def new_obj_id() -> str:
+    """Creates a new BSON Object ID as a string."""
     obj_id = ObjectId()
     return str(obj_id)
 
