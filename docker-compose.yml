@@ -1,3 +1,13 @@
+# ARA Docker Compose configuration file
+#
+# This file specifies how the web server and database containers should be
+# brought up and orchestrated. It networks the containers together so they
+# can communicate and forwards certain ports to the local machine. It also
+# marks the web server as dependent on the database, so it comes up last.
+#
+# Author: Ryan Kovatch (rkovatch@uoregon.edu)
+# Last modified: 04/11/2025
+
 services:
     web_server:
         build: .
