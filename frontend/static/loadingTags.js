@@ -127,12 +127,7 @@ function updateSections() {
         fetchTags();
       });      
       rmvButton.className = "view-button";
-      // const rmvButton = document.createElement("button");
-      // rmvButton.textContent = "REMOVE SET";
-      // //saveMe.setAttribute("onclick", `removeS()`);
-      // rmvButton.className = "view-button";
-  
-      // viewButtonButton.setAttribute('onclick', `setSection(${i})`);
+
       tag.appendChild(tagTitle);
       tag.appendChild(viewButton);
       tag.appendChild(rmvButton);
