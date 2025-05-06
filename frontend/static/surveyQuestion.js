@@ -280,16 +280,18 @@ function updateQuestions() {
       answerArea.className = "answer-area";
       answerArea.id = `answer-area${i}`;
 
-      answerArea.addEventListener("input", function () {
-        let notesContent = answerArea.value;
-        let quest = questions[i].question;
-        saveNote(notesContent,quest);
-      });
+
 
       
       // const q2ba = children[i];
       questionObj.appendChild(answerArea);
       answerArea.value = `${questions[i].answer}`;
+      answerArea.addEventListener("change", function () {
+        let notesContent = answerArea.value;
+        let quest = questions[i].question;
+        console.log(quest, notesContent);
+        saveNote(notesContent,quest,questions[i].id);
+      });
       newAnswer = document.createElement("button");
       newAnswer.setAttribute("onclick", `updateAnswer(${i})`);
       newAnswer.textContent = `SAVE`;
@@ -415,7 +417,7 @@ titleArea.appendChild(addBtn);
 
 
 // Saves note data with default start page of 1
-function saveNote(noteText, quest) {
+function saveNote(noteText, quest, idx) {
 
   console.log('hi');
   const QData = {
@@ -431,7 +433,7 @@ function saveNote(noteText, quest) {
   // If note exists, find note to edit. Otherwise, create note and return its ID
   if (note_id) {
     method = "PATCH";
-    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas/${note_id}`;
+    url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas/${idx}`;
   } else {
     method = "POST";
     url = `/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}/qas`;
@@ -444,7 +446,7 @@ function saveNote(noteText, quest) {
       if (method === "POST") {
         note_id = data._id;
       }
-      getData();
+      //getData();
   });
 }
 
