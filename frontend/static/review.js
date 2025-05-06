@@ -1,3 +1,11 @@
+/*
+Functions for review page functionality. Inlcudes displaying selected sets as flashcards to review.
+Created for CS 422 Project 1: ARA in Spring 2025.
+
+Authors: Claire Cody, Clio Tsao
+Last modified: 05/02/2025
+*/
+
 /* STATIC JavaScript specified for review Module (review.html)
 Includes functionality for gathering all notes + QAs for current Chapter & Section
 Displays these as notecards with "reveal\hide" functionality for QA

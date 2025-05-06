@@ -1,3 +1,10 @@
+/*
+Functions for Read & Recite page functionality. Provides functionality for the user to take notes and save them to the database.
+Created for CS 422 Project 1: ARA in Spring 2025.
+
+Authors: Claire Cody, Clio Tsao, Song Zhang
+Last modified: 05/02/2025
+*/
 
 /*
 Currently, readRecite.js fetches an existing chapter -> section -> note.

@@ -1,3 +1,11 @@
+/*
+Functions for Survey & Question page functionality. Inlcudes adding new chapters, sections, and questions and answers.
+Created for CS 422 Project 1: ARA in Spring 2025.
+
+Authors: Claire Cody, Clio Tsao
+Last modified: 05/05/2025
+*/
+
 /** LOGIC AND FUNCTIONALITY SPECIFIC TO SURVEY & QUESTION MODULE */
 
 
@@ -12,21 +20,10 @@ function goRead() {
 }
 
 
-
-
-
-
-
-
-
 let note_id = null;
 
 
-
-
-
 /*QUESTION SECTION*/
-
 let questions = [];
 
 function getData(){

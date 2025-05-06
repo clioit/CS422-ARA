@@ -1,3 +1,11 @@
+/*
+Functions for loading in chapters and sections. Factors out the logic to be used on surveyQuestion, readRecite, and review.
+Created for CS 422 Project 1: ARA in Spring 2025.
+
+Authors: Claire Cody, Clio Tsao
+Last modified: 05/04/2025
+*/
+
 /** LOGIC AND FUNCTIONS ASSOCIATED WITH CHAPTERS & SECTIONS TAG COLUMN */
 
 //initializing On-Screen area and empty arrays for chapters and sections

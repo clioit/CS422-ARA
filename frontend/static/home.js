@@ -1,3 +1,11 @@
+/*
+Functions for home page functionality. Inlcudes uploading a pdf, loading in selected pdfs, and selecting a pdf to open.
+Created for CS 422 Project 1: ARA in Spring 2025.
+
+Authors: Claire Cody, Clio Tsao
+Last modified: 05/01/2025
+*/
+
 const PDFArray = [];
 let pdf_id = null;
 
