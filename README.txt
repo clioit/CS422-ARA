@@ -1,80 +1,45 @@
-1. The system supports hierarchical note-taking and annotation for PDFs. Users can organize content using chapters, sections, notes/flashcards while reading. All annotations are automatically saved onto the server. The frontend is built with HTML and JavaScript, connected to a Python (Flask + MongoEngine) backend REST API. The entire system is deployed using Docker.
+CS 422 Spring 2025 Project 1: ARA (Active-Reading Assistant)
+Authors: Claire Cody, Ryan Kovatch, Clio Tsao, Derek Van Devender, Song Zhang
+Last modified: 5/5/2025
 
-	
-2. The authors (alphabetical by last name).
-Claire Cody, Ryan Kovatch, Clio Tsao, Derek Van Devender, Song Zhang
+The ARA is a hierarchical note-taking and annotation application for PDFs. Users can annotate content using chapters,
+sections, notes and flashcards while reading. All annotations are automatically saved onto the server. The frontend is 
+built with HTML and JavaScript, connected to a backend comprised of a Python web server and a MongoDB database. The
+entire system is deployed using Docker.
 
+Purpose ---------------------------------------------------------------------------------------------------------------
+The ARA was created as an assignment for CS 422 Software Methodologies I at the University of Oregon. The purpose was 
+to implement a structured reading tool that supports the SQ3R (Survey, Question, Read, Recite, Review) method for 
+reading PDFs and taking hierarchical notes. The project uses a backend (server) + frontend (UI) software to guide 
+students through this method using their own notes, linked PDFs, and reviews.
 
-3. When it was created.
-Last Modified 5/5/2025
+Repository Organization -----------------------------------------------------------------------------------------------
+The ARA repository is organized into three main directories:
+- frontend: HTML, JavaScript, and CSS files supporting the frontend web app
+  - static: JavaScript and CSS files served automatically. Includes .js and .css files for home, login, readRecite, 
+    surveyQuestion, and review pages, as well as loadingTags.js which provides logic shared across readRecite,
+    surveyQuestion, and review.
+  - templates: Jinja HTML templates to be rendered before they’re served. Includes HTML pages for login, home,
+    surveyQuestion, readRecite, and review.
+- backend: Python code implementing the backend web server
+  - db_models.py: a file implementing classes for each major object type
+  - db_seeder.py: code for loading example documents into the database
+  - backend_api.py: the main Flask web server code
+- example_documents: PDF files loaded on startup for demonstration purposes
+  - dummy.pdf: a barebones PDF file for testing
 
+Installation and Usage ------------------------------------------------------------------------------------------------
+The only host-system dependency this application has is Docker. All other dependencies (Python 3.13, external libraries,
+and MongoDB) are installed automatically in isolated containers during the build process. To install the Docker Engine
+and Docker Compose, click the link for your platform on [Get Docker](https://docs.docker.com/get-started/get-docker/).
 
-4. Why it was created such as the class name and assignment.
-CS422 (or similar advanced software engineering / systems course
-Project 1 - Active Reading Assistant (ARA)
-The purpose was to implement a structured reading tool that supports the SQ3R (Survey, Question, Read, Recite, Review) method for reading PDFs and taking hierarchical notes.
-The project uses a backend (server) + frontend (UI) software to guide students through this method using their own notes, linked PDFs, and reviews.
+Once you've installed Docker, open Docker Desktop. This will start the Docker daemon in the background so you can build
+and deploy Docker containers. Now, assuming you have already downloaded/extracted the source code:
 
+- cd into the repository's root directory.
+- Drop any desired example documents in the example_documents directory. These will become available to all users on
+  startup, with a preloaded set of example annotations.
+- Run docker compose up -d. This will bring up the application in the background.
 
-5. What needs to be done to compile the source code and run the program.
-Backend (Flask + MongoEngine + Docker):
-Install Python 3.12 or higher.
-Install Flask and MongoEngine libraries (pip install flask mongoengine).
-Build and run Docker container
-MongoDB must be running (either local or remote).
-
-Frontend:
-Templates (HTML) + Static (CSS + JS) are served via Flask backend.
-Just access through the Flask server (i.e. open localhost or deploy server in browser).
-
-6. Any additional setup that is needed.
-MongoDB server must be up and running.
-This can be local (localhost) or Dockerized version (if applicable).
-MongoDB stores all user notes, PDFs info, and SQ3R data.
-
-Preloads PDF files into the backends PDF directory or database so that users have starter content.
-(Some sample PDFs should be included or manually uploaded for the demo/test).
-
-No login or authentication required other than selecting from the drop down a username.
-(Built-in usernames handled in frontend login page.)
-
-Frontend templates and static files must be properly placed in /templates and /static respectively, and Flask must be configured correctly to serve them.
-
-
-7. Software dependencies such as the version of the compiler.
-Languages + Versions:
-    Python 3.12 or higher (as per SRS).
-    Flask (pip installed).
-    MongoEngine (pip installed).
-    MongoDB (Any recent stable version, tested on latest community version).
-    Docker (optional for backend deployment — tested on Docker Desktop or CLI version).
-
-
-8. A brief description of what is in each subdirectory in the directory structure.
-
-/CS422-ARA
-|
-|-- .idea/                 # (IDE config files — automatically created by IDE like PyCharm)
-|
-|-- backend/               # Backend Python code (Flask app)
-|                           API routes, MongoEngine models, server logic
-|
-|--example documents/      # Example PDFs
-|                          Pre-loaded PDFs for Survey (highlighted PDFs)
-|
-|-- frontend/              # Frontend Web App (HTML templates + Static files)
-|   |-- templates/         # HTML Pages (login.html, home.html, readRecite.html, etc)
-|   |--static/             # CSS and JS files (home.css, review.js, etc)
-|
-|-- .gitignore             # Git ignore list (optional version control config)
-|
-|-- docker-compose         # Docker Compose file (manages multi-container setup)
-|
-|-- Dockerfile             # Dockerfile (backend container setup for Flask + dependencies)
-|
-|-- README                 # Project overview and instructions
-|
-|-- requirements           # Python dependencies (Flask, MongoEngine)
-
-
-
+After the build process finishes, the ARA web interface will be accessible at http://localhost:5001. The MongoDB
+instance is accessible for debugging purposes at mongodb://localhost:5002.
