@@ -1,3 +1,9 @@
+<!-- HTML template for rendering Survey & Question page.
+Created for CS 422 Project 1: ARA in Spring 2025.
+
+Authors: Claire Cody, Clio Tsao
+Last modified: 05/05/2025 -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,17 +26,11 @@
       <div class="section-topper" id="section-topper">
       <label for="new-section">Chapter Select</label>
 
-    <select id="chapter" onchange="setChap()">
+    <select id="chapter" onchange="setChap(), postQuestion()">
         <option id ="no-select" value="" selected>Choose a Chapter</option>
         <div class="chaps">choose</div>
     </select>
     <span id = "page">  </span>
-    <!-- <button id="chapters-btn" onclick="fillChapters()">LOAD CHAPTERS</button> -->
-    <script>
-      // window.addEventListener('load', function (){
-      // fillChapters();
-      // });
-    </script>
     <div class="chapters">
       <ul id= "chapters" class="chapter"></ul>
       <label for="new-chapter">Chapter Name</label>
@@ -60,15 +60,6 @@
   </div>
   <div class="content">
 
-    <!-- <div id="upload-form">
-      <h2>Upload New PDF</h2>
-      <form action="/upload_pdf" method="POST" enctype="multipart/form-data">
-        <input type="file" name="pdf_file" accept=".pdf" required><br>
-        <button type="submit">Upload</button>
-      </form>
-      <div id="upload-status"></div>
-    </div> -->
-
     <div class="notes">
     <h1>Q & A</h1>
     <p>Use this space to <span class="red">Ask & Answer Questions</span></p>
@@ -78,7 +69,6 @@
         <p id="question-message"></p>
         <ul class="questions-list" id="questions-list"></ul>
     </div>
-    <!-- <textarea id="notes" placeholder="Type here..."></textarea> -->
     <button class="review" onclick="goRead()">Next: Read & Recite</button>
 </div>
   </div>
@@ -90,10 +80,6 @@
     let tag_id = "{{ section_id }}";
     </script>
 
-  <!-- <script src="{{url_for('static', filename='review.js')}}">
-  </script> -->
-  <!-- <script src="{{url_for('static', filename='readRecite.js')}}">
-  </script> -->
   <script src="{{url_for('static', filename='loadingTags.js')}}">
   </script>
     <script src="{{url_for('static', filename='surveyQuestion.js')}}">

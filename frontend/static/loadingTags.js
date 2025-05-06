@@ -1,3 +1,11 @@
+/*
+Functions for loading in chapters and sections. Factors out the logic to be used on surveyQuestion, readRecite, and review.
+Created for CS 422 Project 1: ARA in Spring 2025.
+
+Authors: Claire Cody, Clio Tsao
+Last modified: 05/04/2025
+*/
+
 /** LOGIC AND FUNCTIONS ASSOCIATED WITH CHAPTERS & SECTIONS TAG COLUMN */
 
 //initializing On-Screen area and empty arrays for chapters and sections
@@ -120,20 +128,29 @@ function updateSections() {
 
       const rmvButton = document.createElement("button");
       rmvButton.textContent = "REMOVE SECTION";
-      //saveMe.setAttribute("onclick", `removeS()`);
+      rmvButton.addEventListener('click', function() {
+        console.log("change", sectTags[i].id);
+        tag_id = sectTags[i].id;
+        removeSection(tag_id);
+        fetchTags();
+      });      
       rmvButton.className = "view-button";
-      // const rmvButton = document.createElement("button");
-      // rmvButton.textContent = "REMOVE SET";
-      // //saveMe.setAttribute("onclick", `removeS()`);
-      // rmvButton.className = "view-button";
-  
-      // viewButtonButton.setAttribute('onclick', `setSection(${i})`);
+
       tag.appendChild(tagTitle);
       tag.appendChild(viewButton);
-     // tag.appendChild(rmvButton);
+      tag.appendChild(rmvButton);
   
       tagList.appendChild(tag);
     }
+  }
+
+  function removeSection(rmvId) {
+    // DELETE request to endpoint
+    tag_id = rmvId;
+    fetch(`/pdfs/${pdf_id}/chapters/${chap_id}/sections/${tag_id}`
+    , {
+    method: 'DELETE'
+    })
   }
 
   function changeSection(id){
